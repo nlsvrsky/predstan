@@ -73,12 +73,12 @@ orientations = [pi/2+tilt pi/2-tilt tilt pi-tilt]; % V-CCW V-CW H-CCW H-CW
 p.norient = numel(orientations);
 
 % Conditions
-contrasts = 0.64;
+contrasts = p.stimContrasts;
 soas      = [100:50:500 800];
 stimseqs  = {[2 1],[2 2],[2 3],[2 4]};
 
 % Pick conditions to run
-rcontrast = 1; % contrast levels to run
+rcontrast = 1:size(contrasts,2); % contrast levels to run
 ncontrast = numel(rcontrast);
 
 if ~exist('rcond','var') || isempty(rcond)

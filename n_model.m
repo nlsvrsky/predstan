@@ -10,10 +10,11 @@ for t = p.dt:p.dt:p.T
     %% Sensory layer 1 (S1)
     % Input (stimulus)
     inp = p.stim(:,idx);
+    contrast = p.stimContrast(:,idx);
     
     % Excitatory drive
     if any(inp)
-        drive = halfExp(p.rfresp(logical(inp),:)*p.contrast,p.p)'; % select pre-calculated response
+        drive = halfExp(p.rfresp(logical(inp),:)*contrast(logical(inp)),p.p)'; % select pre-calculated response
     else
         drive = zeros(p.ntheta,1);
     end

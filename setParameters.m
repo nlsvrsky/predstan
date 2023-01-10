@@ -80,7 +80,8 @@ p.h               = repmat(h0, p.ntheta, 1);
 
 %% Stimulus
 p.stimOnset       = 500;            % relative to start of trial (ms)
-p.stimDur         = 30;   
+p.stimDur         = 30;
+p.stimContrasts   = [.64; .64];
 
 %% Task (control input)
 p.AVOnset         = -34; 
