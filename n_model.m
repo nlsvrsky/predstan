@@ -24,7 +24,7 @@ for t = p.dt:p.dt:p.T
     
     % Normalize and update firing rates
     [p.r1(:,idx), p.f1(:,idx), p.s1(:,idx)] = n_core(...
-        p.d1(:,idx), p.sigma1, p.p, p.r1(:,idx-1), p.tau1, p.dt);
+        p.d1(:,1:idx), p.sigma1, p.p, p.r1(:,idx-1), p.tau1, p.tau1_t, p.dt);
     
     %% Sensory layer 2 (S2)
     % Excitatory drive
@@ -33,7 +33,7 @@ for t = p.dt:p.dt:p.T
     
     % Normalize and update firing rates
     [p.r2(:,idx), p.f2(:,idx), p.s2(:,idx)] = n_core(...
-        p.d2(:,idx), p.sigma2, p.p, p.r2(:,idx-1), p.tau2, p.dt);
+        p.d2(:,1:idx), p.sigma2, p.p, p.r2(:,idx-1), p.tau2, p.tau2_t, p.dt);
     
     %% Sensory layer 3 (S3)    
     % Excitatory drive
@@ -42,7 +42,7 @@ for t = p.dt:p.dt:p.T
     
     % Normalize and update firing rates
     [p.r3(:,idx), p.f3(:,idx), p.s3(:,idx)] = n_core(...
-        p.d3(:,idx), p.sigma3, p.p, p.r3(:,idx-1), p.tau3, p.dt);
+        p.d3(:,1:idx), p.sigma3, p.p, p.r3(:,idx-1), p.tau3, p.tau3_t, p.dt);
     
     %% Decision layer
     % Excitatory drive
@@ -72,7 +72,7 @@ for t = p.dt:p.dt:p.T
 
     % Normalize and update firing rates
     [p.rd(:,idx), p.fd(:,idx), p.sd(:,idx)] = n_core(...
-        p.dd(:,idx), p.sigmaD, p.p, p.rd(:,idx-1), p.tauD, p.dt);
+        p.dd(:,idx), p.sigmaD, p.p, p.rd(:,idx-1), p.tauD, 0, p.dt);
     
     %% Voluntary attention layer
     % Inputs
@@ -84,7 +84,7 @@ for t = p.dt:p.dt:p.T
     
     % Normalize and update firing rates
     [p.rav(:,idx), p.fav(:,idx), p.sav(:,idx)] = n_core(...
-        p.dav(:,idx), p.sigmaA, p.p, p.rav(:,idx-1), p.tauAV, p.dt);
+        p.dav(:,idx), p.sigmaA, p.p, p.rav(:,idx-1), p.tauAV, 0, p.dt);
     
     %% Involuntary attention layer
     % Excitatory drive
@@ -93,6 +93,6 @@ for t = p.dt:p.dt:p.T
     
     % Normalize and update firing rates
     [p.rai(:,idx), p.fai(:,idx), p.sai(:,idx)] = n_core(...
-        p.dai(:,idx), p.sigmaA, p.p, p.rai(:,idx-1), p.tauAI, p.dt);
+        p.dai(:,idx), p.sigmaA, p.p, p.rai(:,idx-1), p.tauAI, 0, p.dt);
     
 end
