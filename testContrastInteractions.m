@@ -1,8 +1,18 @@
 % model testing
 opt = [];
 % H/H, H/L, L/H, L/L
-opt.stimContrasts = [.64 .64 .16 .16; ...
-                     .64 .16 .64 .16];
+opt.stimContrasts = [.64 .64 .32 .32; ...
+                     .64 .32 .64 .32];
+opt.sigma1 = 1.4;
+opt.sigma2 = 0.1;
+opt.sigmaD = 0.7;
+
+opt.scaling1 = 1e5;
+opt.scaling2 = 1e5;
+
+opt.tau1 = 52;
+opt.tau2 = 100;
+opt.tauD = 1e5;
 
 modelClass = [];
 rsoa = 4; % SOA = 250 ms
