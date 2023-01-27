@@ -14,19 +14,17 @@ function [r, f, s] = n_core(d, sigma, p, r_prev, tau, tau_t, dt)
 % Normalization pool
 pool = abs(d); % abs in case drive is negative
 
-% Excitatory drive
-idx = size(d,2)-1;
-if tau_t > 0
-    e = sum(pool .* exp((-idx:0)*dt/tau_t),2) ./ sum(exp((-1e5:0)*dt/tau_t));
-else
-    e = pool(:,end);
-end
-
 % Suppressive Drive
-s = sum(abs(e));
+idx = size(d,2);
+if tau_t > 0
+    temporalW = exp((-idx+1:0)*dt/tau_t) ./ sum(exp((-1e5:0)*dt/tau_t));
+else
+    temporalW = [zeros(1,idx-1) 1];
+end
+s = sum(sum(pool.*temporalW));
 
 % Normalization
-f = e ./ (s + halfExp(sigma, p));
+f = d(:,end) ./ (s + halfExp(sigma, p));
 
 % Update firing rates
 r = r_prev + (dt/tau)*(-r_prev + f);

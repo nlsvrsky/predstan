@@ -14,17 +14,22 @@ for t = p.dt:p.dt:p.T
     
     % Excitatory drive
     if any(inp)
-        drive = halfExp(p.rfresp(logical(inp),:)*contrast(logical(inp)),p.p)'; % select pre-calculated response
+        drive1(:,idx) = halfExp(p.rfresp(logical(inp),:)*contrast(logical(inp)),p.p)'; % select pre-calculated response
     else
-        drive = zeros(p.ntheta,1);
+        drive1(:,idx) = zeros(p.ntheta,1);
     end
     
     attGain = halfExp(1+p.rav(:,idx-1)*p.aAV).*halfExp(1+p.rai(:,idx-1)*p.aAI);
-    p.d1(:,idx) = attGain.*drive;
+    if p.tauE > 0
+        temporalW = exp((-idx+1:0)*p.dt/p.tauE) ./ sum(exp((-1e5:0)*3*p.dt/p.tauE));
+    else
+        temporalW = [zeros(1,idx-1) 1];
+    end
+    p.d1(:,idx) = attGain.*sum(drive1.*temporalW,2);
     
     % Normalize and update firing rates
     [p.r1(:,idx), p.f1(:,idx), p.s1(:,idx)] = n_core(...
-        p.d1(:,1:idx), p.sigma1, p.p, p.r1(:,idx-1), p.tau1, p.tau1_t, p.dt);
+        p.d1(:,1:idx), p.sigma1, p.p, p.r1(:,idx-1), p.tau1, p.tauS, p.dt);
     
     %% Sensory layer 2 (S2)
     % Excitatory drive
@@ -63,7 +68,7 @@ for t = p.dt:p.dt:p.T
         end
         evidence = decodeEvidence(response(:,idx)', rfresp(:,:,iStim)); 
         evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
-        evidence(abs(evidence)<1e-3) = 0; % otherwise near-zero response will give a little evidence
+        %evidence(abs(evidence)<1e-3) = 0; % otherwise near-zero response will give a little evidence
         
         % drive
         drive = evidence;
