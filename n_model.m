@@ -61,14 +61,17 @@ for t = p.dt:p.dt:p.T
             case {3, 4}
                 rfresp(:,:,iStim) = p.rfresp(3:4,:);
         end
-        evidence = decodeEvidence(response(:,idx)', rfresp(:,:,iStim)); 
-        evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
-        %evidence(abs(evidence)<1e-3) = 0; % otherwise near-zero response will give a little evidence
+        evidence(iStim) = decodeEvidence(response(:,idx)', rfresp(:,:,iStim));
+%         evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
+%         evidence(abs(evidence)<1e-3) = 0; % otherwise near-zero response will give a little evidence
         
         % drive
-        drive = evidence;
-        p.dd(iStim,idx) = drive;
+%         drive = evidence;
+%         p.dd(iStim,idx) = drive;
     end
+
+    evidence(evidence==min(evidence)) = 0; % only accumulate the stronger evidence
+    p.dd(:,idx) = evidence;
 
     % Normalize and update firing rates
     [p.rd(:,idx), p.fd(:,idx), p.sd(:,idx)] = n_core(...
