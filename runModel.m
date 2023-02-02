@@ -141,6 +141,7 @@ for icond = 1:numel(rcond)
                 p = setStim(p);
                 p = setTask(p,condname);
                 p = setDecisionWindows(p);
+                p = setTemporalWindows(p);
 
                 % run the model
                 p = n_model(p);
