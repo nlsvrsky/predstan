@@ -8,12 +8,15 @@ rcond = []; % cueT1, cueT2
 % H/H, H/L, L/H, L/L
 opt.stimContrasts = [.64 .64 .16 .16; ...
                      .64 .16 .64 .16];
+% opt.stimContrasts = [.64; .64];
 opt.scaling1 = 3e4;
 opt.scaling2 = 3e4;
 %opt.aAI = 0;
 
-opt.tauE = 100;
-opt.tauS = 100;
+opt.tauE1 = 50;
+opt.tauS1 = 100;
+opt.tauE2 = 50;
+opt.tauS2 = 200;
 
 opt.display.plotTS = 0; % plot the time series for each simulation
 
