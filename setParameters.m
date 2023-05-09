@@ -51,25 +51,19 @@ p.p               = 1.5;
 
 %% Sensory layer 1
 p.tau1            = 52;             % time constant (ms)
-p.tau1_t          = 0;              % time constant of temporal summation (ms)
-p.scale_w1        = 1;              % scaling constant for temporal history
 p.sigma1          = 1.4;            % semisaturation constant
 
 %% Sensory layer 2
 p.tau2            = 100;
-p.tau2_t          = 0;              % time constant of temporal summation (ms)
 p.sigma2          = .1;
 
 %% Sensory layer 3
 p.tau3            = 2;
-p.tau3_t          = 0;              % time constant of temporal summation (ms)
 p.sigma3          = .3; 
 
 %% Attention
 p.tauAI           = 2;              % time constant involuntary attention (ms)
 p.tauAV           = 50;             % time constant voluntary attention (ms)
-p.tauAI_t         = 0;           % time constant of temporal summation (ms)
-p.tauAV_t         = 0;           % time constant of temporal summation (ms)
 
 p.aAV             = 40;
 p.gamPSh          = 2.2;
@@ -83,6 +77,14 @@ p.sigmaA          = 20;
 
 h0                = makePrefilter(0:p.dt/1000:0.8, p.gamPSh, p.gamPSc, p.gamNSh, p.gamNSc, p.aANeg);
 p.h               = repmat(h0, p.ntheta, 1);
+
+%% Temporal normalization
+p.tauE1 = 0; % time constant of temporal summation for S1 excitation
+p.tauS1 = 0; % " " S1 suppression
+p.tauE2 = 0; % " " S2 excitation
+p.tauS2 = 0; % " " S2 suppression
+p.tauEAV = 0; % " " AV excitation
+p.tauSAV = 0; % " " AV suppression
 
 %% Stimulus
 p.stimOnset       = 500;            % relative to start of trial (ms)
@@ -107,7 +109,6 @@ p.AVProp            = 1;            % proportion of attention allocated to cued 
 %% Decision
 p.sigmaD          = .7; 
 p.tauD            = 100000;
-p.tauD_t          = 0;              % time constant of temporal summation (ms)
 
 %% Scaling (for fitting only)
 p.scaling1        = 1e5;

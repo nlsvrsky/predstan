@@ -20,20 +20,20 @@ for t = p.dt:p.dt:p.T
     end
     
     attGain = halfExp(1+p.rav(:,idx-1)*p.aAV).*halfExp(1+p.rai(:,idx-1)*p.aAI);
-    p.d1(:,idx) = attGain.*sum(drive1.*fliplr(p.tempWE1(1:idx)),2);
+    p.d1(:,idx) = attGain.*sum(drive1.*p.tempWE1(idx:-1:1),2);
     
     % Normalize and update firing rates
     [p.r1(:,idx), p.f1(:,idx), p.s1(:,idx)] = n_core(...
-        p.d1(:,1:idx), p.sigma1, p.p, p.r1(:,idx-1), p.tau1, fliplr(p.tempWS1(1:idx)), p.dt);
+        p.d1(:,1:idx), p.sigma1, p.p, p.r1(:,idx-1), p.tau1, p.tempWS1(idx:-1:1), p.dt);
     
     %% Sensory layer 2 (S2)
     % Excitatory drive
     drive2 = halfExp(p.r1(:,1:idx),p.p);
-    p.d2(:,idx) = sum(drive2.*fliplr(p.tempWE2(1:idx)),2);
+    p.d2(:,idx) = sum(drive2.*p.tempWE2(idx:-1:1),2);
     
     % Normalize and update firing rates
     [p.r2(:,idx), p.f2(:,idx), p.s2(:,idx)] = n_core(...
-        p.d2(:,1:idx), p.sigma2, p.p, p.r2(:,idx-1), p.tau2, fliplr(p.tempWS2(1:idx)), p.dt);
+        p.d2(:,1:idx), p.sigma2, p.p, p.r2(:,idx-1), p.tau2, p.tempWS2(idx:-1:1), p.dt);
     
     %% Sensory layer 3 (S3)    
     % Excitatory drive
@@ -79,15 +79,15 @@ for t = p.dt:p.dt:p.T
     
     %% Voluntary attention layer
     % Inputs
-    inp = p.task(:,idx-1);
+    inp = p.task(:,1:idx-1);
     
     % Excitatory drive
     drive = halfExp(inp, p.p);
-    p.dav(:,idx) = sum(drive); % not feature-specific
+    p.dav(:,idx) = sum(drive.*p.tempWEAV(idx-1:-1:1),2); % not feature-specific
     
     % Normalize and update firing rates
     [p.rav(:,idx), p.fav(:,idx), p.sav(:,idx)] = n_core(...
-        p.dav(:,idx), p.sigmaA, p.p, p.rav(:,idx-1), p.tauAV, 1, p.dt);
+        p.dav(:,1:idx), p.sigmaA, p.p, p.rav(:,idx-1), p.tauAV, p.tempWSAV(idx:-1:1), p.dt);
     
     %% Involuntary attention layer
     % Excitatory drive
