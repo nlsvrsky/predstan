@@ -51,7 +51,7 @@ for t = p.dt:p.dt:p.T
         case 'LC'
             response = p.r3;
         otherwise
-            response = p.r2;
+            response = p.r1;
     end
     % decode just between CCW/CW for the appropriate axis
     for iStim = 1:2
@@ -63,14 +63,14 @@ for t = p.dt:p.dt:p.T
         end
         evidence(iStim) = decodeEvidence(response(:,idx)', rfresp(:,:,iStim));
 %         evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
-%         evidence(abs(evidence)<1e-3) = 0; % otherwise near-zero response will give a little evidence
-        
+%         evidence(:,abs(evidence)<1e-3) = 0; % otherwise near-zero response will give a little evidence
+
         % drive
 %         drive = evidence;
 %         p.dd(iStim,idx) = drive;
     end
 
-    evidence(evidence==min(evidence)) = 0; % only accumulate the stronger evidence
+%     evidence(evidence==min(evidence)) = 0; % only accumulate the stronger evidence
     p.dd(:,idx) = evidence;
 
     % Normalize and update firing rates
