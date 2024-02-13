@@ -12,7 +12,7 @@ end
 if p.tauS1 > 0
     p.tempWS1 = 50 * exp(-(0:p.nt-1)*p.dt/p.tauS1) * (p.dt/p.tauS1);
 else
-    p.tempWS1 = 50 * [1 zeros(1,p.nt-1)];
+    p.tempWS1 = [1 zeros(1,p.nt-1)];
 end
 
 %% Sensory layer 2 (S2)
