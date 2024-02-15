@@ -13,14 +13,17 @@ soas = [100:50:500 800];
 opt.stimContrasts = [.64 .64 .32 .32; ...
                      .64 .32 .64 .32];
 % opt.stimContrasts = [.64; .64];
-opt.scaling1 = 2e5;
-opt.scaling2 = 3e5;
+opt.scaling1 = 6e5;
+opt.scaling2 = 8e5;
 opt.aAI = 0;
 
+% opt.eScale = 1/100;
+% opt.sScale = 1/100;
+
 opt.tauE1 = 200;
-opt.tauS1 = 200;
+opt.tauS1 = 50;
 % opt.tau1 = 2;
-% opt.sigma1 = 8;
+% opt.sigma1 = .01;
 
 % opt.tauE2 = 0;
 % opt.tauS2 = 0;
