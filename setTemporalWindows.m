@@ -3,16 +3,16 @@ function p = setTemporalWindows(p)
 %% Sensory layer 1 (S1)
 %  excitatory drive
 if p.tauE1 > 0
-    p.tempWE1 = exp(-(0:p.nt-1)*p.dt/p.tauE1) * (p.dt/p.tauE1); %* p.eScale;
+    p.tempWE1 = exp(-(0:p.nt-1)*p.dt/p.tauE1) * (p.dt/p.tauE1) * p.eScale;
 else
-    p.tempWE1 = [1 zeros(1,p.nt-1)]; %* p.eScale;
+    p.tempWE1 = [1 zeros(1,p.nt-1)] * p.eScale;
 end
 
 %  suppresive drive
 if p.tauS1 > 0
-    p.tempWS1 = 50 * exp(-(0:p.nt-1)*p.dt/p.tauS1) * (p.dt/p.tauS1); %* p.sScale;
+    p.tempWS1 = exp(-(0:p.nt-1)*p.dt/p.tauS1) * (p.dt/p.tauS1) * p.sScale;
 else
-    p.tempWS1 = [1 zeros(1,p.nt-1)]; %* p.sScale;
+    p.tempWS1 = [1 zeros(1,p.nt-1)] * p.sScale;
 end
 
 %% Sensory layer 2 (S2)
