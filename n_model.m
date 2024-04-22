@@ -51,7 +51,7 @@ for t = p.dt:p.dt:p.T
         case 'LC'
             response = p.r3;
         otherwise
-            response = p.r2;
+            response = p.r1;
     end
     % decode just between CCW/CW for the appropriate axis
     for iStim = 1:2

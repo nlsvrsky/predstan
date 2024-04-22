@@ -12,7 +12,7 @@ switch cond
         if p.distributeVoluntary
             attWeights = w;
         else
-            attWeights = [max(w) max(w)];
+            attWeights = [min(w) min(w)];
         end
     otherwise
         error('attention cond not recognized');

@@ -35,7 +35,7 @@ opt.tauS1 = 50;
 % opt.tauAV = 2;
 % opt.sigmaA = 100;
 
-% opt.AVOnset = -20;
+opt.AVOnset = 0;
 % opt.AVDur = 60;
 
 % opt.tauD = 500;
@@ -45,7 +45,7 @@ opt.AVWeights = [1 1];
 % opt.AVNeutralT1Weight = 0.25;
 opt.distributeVoluntary = 0;
 
-opt.display.plotTS = 0; % plot the time series for each simulation
+opt.display.plotTS = 1; % plot the time series for each simulation
 opt.display.plotPerf = 0;
 
 [~,~,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);
@@ -81,7 +81,7 @@ if isempty(rcond)
         xlim([0.5 3.5]), xticks(1:3), xticklabels({'Valid','Neutral','Invalid'})
         ylabel("Performance (d')"), ylim([0 3])
         legend("T2 high","T2 low")
-    
+
         subplot(142), hold on, title("T1 low")
         plot(1:3, squeeze(sortedPerf(1,:,[3 4])),'.-','LineWidth',1.5)
         xlim([0.5 3.5]), xticks(1:3), xticklabels({'Valid','Neutral','Invalid'})
@@ -115,6 +115,43 @@ if isempty(rcond)
         xlim([0.8 2.2]), xticks(1:2), xticklabels(["T2 low","T2 high"])
         ylim([0 3]), ylabel("Performance (d')")
         legend(["T1 high","T1 low"])
+    elseif length(opt.stimContrasts)==4
+        conds = ["T1 high/T2 high","T1 high/T2 low","T1 low/T2 high","T1 low/T2 low"];
+        figure
+        for ii=1:4
+            subplot(1,4,ii)
+            plot(1:3, sortedPerf(:,:,ii),'.-','LineWidth',1.5)
+            title(conds(ii))
+            xlim([0.5 3.5]), xticks(1:3), xticklabels({'Valid','Neutral','Invalid'})
+            ylabel("Performance (d')"), ylim([0 3])
+        end
+        legend(["T1","T2"])
+        
+        % neutral condition only
+        figure
+        subplot(1,2,1), hold on, title("T1")
+        plot(1:2, squeeze(sortedPerf(1,3,[3 1]))) % T1 with T2 high contrast
+        plot(1:2, squeeze(sortedPerf(1,3,[4 2]))) % T1 with T2 low contrast
+        xlim([0.8 2.2]), xticks(1:2), xticklabels(["T1 low","T1 high"])
+        ylim([0 3]), ylabel("Performance (d')")
+        legend(["T2 high","T2 low"])
+        
+        subplot(1,2,2), hold on, title("T2")
+        plot(1:2, squeeze(sortedPerf(2,3,[2 1]))) % T2 with T1 high contrast
+        plot(1:2, squeeze(sortedPerf(2,3,[4 3]))) % T2 with T1 low contrast
+        xlim([0.8 2.2]), xticks(1:2), xticklabels(["T2 low","T2 high"])
+        ylim([0 3]), ylabel("Performance (d')")
+        legend(["T1 high","T1 low"])
+    elseif length(rsoa)>1
+        figure
+        subplot(121), plot(soas,squeeze(perf(1,:,[1 3 2]))), title("T1")
+        xlim([soas(rsoa(1))-100 soas(rsoa(end))+50]), ylim([0 3])
+        xlabel("SOA (ms)"), ylabel("Performance (d')")
+        
+        subplot(122), plot(soas,squeeze(perf(2,:,[2 3 1]))), title("T2")
+        xlim([soas(rsoa(1))-100 soas(rsoa(end))+50]), ylim([0 3])
+        xlabel("SOA (ms)"), ylabel("Performance (d')")
+        legend(["Valid","Neutral","Invalid"])
     else
         sortedPerf(1,:) = perf(1,[1 3 2]);
         sortedPerf(2,:) = perf(2,[2 3 1]);
