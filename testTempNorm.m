@@ -1,7 +1,7 @@
 
 opt = [];
 modelClass = [];
-rsoa = 4; % SOA = 250 ms (see runModel)
+rsoa = 10; % SOA = 250 ms (see runModel)
 rseq = []; % default orientation sequence
 rcond = 3; % cueT1, cueT2
 soas = [100:50:500 800];
@@ -13,15 +13,15 @@ soas = [100:50:500 800];
 opt.stimContrasts = [.64 .64 .32 .32; ...
                      .64 .32 .64 .32];
 % opt.stimContrasts = [.64; .64];
-opt.scaling1 = 6e5;
-opt.scaling2 = 7e5;
+opt.scaling1 = 3e5;
+opt.scaling2 = 4e5;
 opt.aAI = 0;
 
 opt.eScale = 1;
 opt.sScale = 50;
 
-opt.tauE1 = 400;
-opt.tauS1 = 50;
+opt.tauE1 = 900;
+opt.tauS1 = 900;
 % opt.tau1 = 2;
 % opt.sigma1 = .01;
 
@@ -35,17 +35,17 @@ opt.tauS1 = 50;
 % opt.tauAV = 2;
 % opt.sigmaA = 100;
 
-opt.AVOnset = 0;
+% opt.AVOnset = 0;
 % opt.AVDur = 60;
 
 % opt.tauD = 500;
-opt.tR = 2;
-opt.aAV = 1000;
-opt.AVWeights = [1 1];
+% opt.tR = 2;
+% opt.aAV = 1e2;
+% opt.AVWeights = [1 1];
 % opt.AVNeutralT1Weight = 0.25;
-opt.distributeVoluntary = 0;
+% opt.distributeVoluntary = 1;
 
-opt.display.plotTS = 1; % plot the time series for each simulation
+opt.display.plotTS = 0; % plot the time series for each simulation
 opt.display.plotPerf = 0;
 
 [~,~,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);

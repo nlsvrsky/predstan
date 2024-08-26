@@ -74,7 +74,7 @@ p.norient = numel(orientations);
 
 % Conditions
 contrasts = p.stimContrasts;
-soas      = [100:50:500 800];
+% soas      = [100:50:500 800];
 stimseqs  = {[2 1],[2 2],[2 3],[2 4]};
 
 % Pick conditions to run
@@ -87,7 +87,8 @@ end
 ncond = numel(rcond);
 
 if ~exist('rsoa','var') || isempty(rsoa)
-    rsoa = 1:numel(soas); % soa levels to run
+    % rsoa = 1:numel(soas); % soa levels to run
+    rsoa = 250;
 end
 nsoa = numel(rsoa);
 
@@ -118,7 +119,7 @@ for icond = 1:numel(rcond)
                 p.cond = cond;
                 p.condname = condname;
                 p.contrast = contrasts(:,c);
-                p.soa = soas(:,s);
+                p.soa = s; %soas(:,s);
                 p.nstim = numel(p.soa)+1;
                 p.stimseq = stimseqs{q};
                 p.orientseq = orientations(p.stimseq);
