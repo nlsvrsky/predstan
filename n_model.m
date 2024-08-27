@@ -62,7 +62,7 @@ for t = p.dt:p.dt:p.T
                 rfresp(:,:,iStim) = p.rfresp(3:4,:);
         end
         evidence(iStim) = decodeEvidence(response(:,idx)', rfresp(:,:,iStim));
-        % evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
+        evidence(iStim) = evidence(iStim)*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
         % evidence(:,abs(evidence)<1e-3) = 0; % otherwise near-zero response will give a little evidence
 
         % % drive
