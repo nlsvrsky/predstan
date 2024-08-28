@@ -100,6 +100,81 @@ plot(p.tlist,squeeze(r1_comb(6,:,:)./max(r1_comb(6,:,:),[],2)))
 
 
 %% subadditive responses
+opt = [];
+modelClass = [];
+rsoa = 1000; % SOA = 250 ms (see runModel)
+rseq = []; % default orientation sequence
+rcond = 3; % cueT1, cueT2
+
+opt.stimContrasts = [.64; 0];
+opt.scaling1 = 3e5;
+opt.scaling2 = 4e5;
+opt.aAI = 0;
+
+opt.eScale = 1;
+opt.sScale = 50;
+
+opt.tauE1 = 100;
+opt.tauS1 = 50;
+
+opt.dt = 2;
+opt.T = 4.1*1000;
+opt.nt = opt.T/opt.dt+1;
+opt.tlist = 0:opt.dt:opt.T;
+
+opt.display.plotTS = 0; % plot the time series for each simulation
+opt.display.plotPerf = 0;
+
+stimDur = [30 60 120 240 480];
+r1_dur = nan(12,opt.nt,length(stimDur));
+for ii=1:length(stimDur)
+    opt.stimDur = stimDur(ii);
+    [~,p,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);
+    r1_dur(:,:,ii) = p.r1;
+end
+
+figure
+plot(p.tlist,squeeze(r1_dur(6,:,:)))
+xlim([0 2000])
+
+figure
+plot(stimDur,squeeze(sum(r1_dur(6,:,:),2)))
+ylim([0 6])
+
+figure
+plot(stimDur(2:end),squeeze(sum(r1_dur(6,:,2:end),2)./sum(r1_dur(6,:,1:end-1))))
+ylim([1 2])
+xticks(stimDur)
+
+% effect of time constants
+tauE_list = [100 500];
+tauS_list = [50  500];
+
+loop_params = combvec(stimDur,tauE_list,tauS_list);
+
+r1_durP = nan(12,opt.nt,length(loop_params));
+for ii=1:length(loop_params)
+    opt.stimDur = loop_params(1,ii);
+    opt.tauE1 = loop_params(2,ii);
+    opt.tauS1 = loop_params(3,ii);
+    [~,p,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);
+    r1_durP(:,:,ii) = p.r1;
+end
+
+r1_durP2 = reshape(r1_durP(6,:,:),length(p.tlist),length(stimDur),length(tauE_list),length(tauS_list));
+
+figure
+for ii=1:2, for jj=1:2
+    subplot(2,2,(ii-1)*2+jj)
+    plot(p.tlist,r1_durP2(:,:,ii,jj))
+    title(sprintf("E: %d ms, S: %d ms",tauE_list(ii),tauS_list(jj)))
+end, end
+
+r1_durPS = reshape(sum(r1_durP2),5,4);
+
+figure
+plot(stimDur(2:end),r1_durPS(2:end,:)./r1_durPS(1:end-1,:))
+ylim([1 2])
 
 %% repetition suppression
 
