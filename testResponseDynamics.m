@@ -52,12 +52,13 @@ respE_T1 = squeeze(sum(respE(1,:,:,1:end-2),2) ./ sum(respE(1,:,:,end),2));
 respE_T2 = squeeze(sum(respE(2,:,:,1:end-2),2) ./ sum(respE(2,:,:,end-1),2));
 
 figure
+subplot(121)
 plot(soas(1:end-2),respE_T2)
 ylim([0 1.05])
 title('Repetition suppression')
 xlabel('SOA'), ylabel('Normalized response')
 
-figure
+subplot(122)
 plot(soas(1:end-2),respE_T1)
 ylim([0 1.05])
 title('Backwards masking')
@@ -91,12 +92,13 @@ respS_T1 = squeeze(sum(respS(1,:,:,1:end-2),2) ./ sum(respS(1,:,:,end),2));
 respS_T2 = squeeze(sum(respS(2,:,:,1:end-2),2) ./ sum(respS(2,:,:,end-1),2));
 
 figure
+subplot(121)
 plot(soas(1:end-2),respS_T2)
 ylim([0 1.05])
 title('Repetition suppression')
 xlabel('SOA'), ylabel('Normalized response')
 
-figure
+subplot(122)
 plot(soas(1:end-2),respS_T1)
 ylim([0 1.05])
 title('Backwards masking')
@@ -130,6 +132,7 @@ respC_T1 = squeeze(sum(respC(1,:,:,1:end-2),2) ./ sum(respC(1,:,:,end),2));
 respC_T2 = squeeze(sum(respC(2,:,:,1:end-2),2) ./ sum(respC(2,:,:,end-1),2));
 
 figure
+subplot(121)
 plot(soas(1:end-2),respC_T2(1,:),'r-', ...
      soas(1:end-2),respC_T2(2,:),'b-', ...
      soas(1:end-2),respC_T2(3,:),'r--', ...
@@ -138,7 +141,7 @@ ylim([0 1.05])
 title('Repetition suppression')
 xlabel('SOA'), ylabel('Normalized response')
 
-figure
+subplot(122)
 plot(soas(1:end-2),respC_T1(1,:),'r-', ...
      soas(1:end-2),respC_T1(2,:),'b-', ...
      soas(1:end-2),respC_T1(3,:),'r--', ...
@@ -146,3 +149,5 @@ plot(soas(1:end-2),respC_T1(1,:),'r-', ...
 ylim([0 1.05])
 title('Backwards masking')
 xlabel('SOA'), ylabel('Normalized response')
+
+legend({'E: 100, S: 50','E: 100, S: 500','E: 500, S: 50','E: 500, S: 500'})
