@@ -180,7 +180,7 @@ ylim([1 2])
 
 opt = [];
 modelClass = [];
-rsoa = 10; % SOA = 250 ms (see runModel)
+rsoa = 1000; % SOA = 250 ms (see runModel)
 rseq = []; % default orientation sequence
 rcond = 3; % cueT1, cueT2
 soas = [100:50:500 800];
@@ -231,3 +231,52 @@ end
 
 
 %% backwards masking
+opt = [];
+modelClass = [];
+rsoa = []; % SOA = 250 ms (see runModel)
+rseq = []; % default orientation sequence
+rcond = 3; % cueT1, cueT2
+
+opt.stimContrasts = [.64; .64];
+opt.scaling1 = 3e5;
+opt.scaling2 = 4e5;
+opt.aAI = 0;
+
+opt.dt = 2;
+opt.T = 4.1*1000;
+opt.nt = opt.T/opt.dt+1;
+opt.tlist = 0:opt.dt:opt.T;
+
+opt.eScale = 1;
+opt.sScale = 50;
+
+% opt.tauE1 = 400;
+opt.tauS1 = 100;
+
+opt.display.plotTS = 0; % plot the time series for each simulation
+opt.display.plotPerf = 0;
+
+% effect of excitatory time constant
+tauE_list = 50:50:500;
+soas = [100:100:1500 2000 2100];
+loop_params = combvec(tauE_list,soas);
+
+opt.tauE1 = 100;
+rsoa = 100;
+
+opt.stimContrasts = [.64; .64];
+[~,p,~] = runModel(opt, modelClass, rsoa, rseq, rcond);
+
+figure
+subplot(121)
+plot(p.tlist,p.r1)
+xlim([0 2500])
+title('T1 and T2')
+
+opt.stimContrasts = [.64; 0];
+[~,p,~] = runModel(opt, modelClass, rsoa, rseq, rcond);
+
+subplot(122)
+plot(p.tlist,p.r1)
+xlim([0 2500])
+title('T1 only')
