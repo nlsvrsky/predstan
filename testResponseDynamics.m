@@ -26,8 +26,9 @@ opt.display.plotPerf = 0;
 
 % effect of excitatory time constant
 tauE_list = 0:50:500;
-soas = [100:100:1500 2000 2100];
-loop_params = combvec(tauE_list,soas);
+soas = 100:100:1500;
+contr_list = [.64 0 .64; .64 .64 0];
+loop_params = combvec(tauE_list,soas,contr_list);
 
 respE = nan(2,opt.nt,length(loop_params));
 parfor ii=1:length(loop_params)
@@ -35,73 +36,131 @@ parfor ii=1:length(loop_params)
     opt2.tauE1 = loop_params(1,ii);
     opt2.tauS1 = 0;
     this_soa = loop_params(2,ii);
-    if this_soa==2000 % repetition suppression baseline
-        opt2.stimContrasts = [0; .64];
-    elseif this_soa==2100 % backwards masking baseline
-        opt2.stimContrasts = [.64; 0];
-    else
-        opt2.stimContrasts = [.64; .64];
-    end
+    this_contrast = loop_params(3:4,ii);
 
+    opt2.stimContrasts = this_contrast;
     [~,p,~] = runModel(opt2, modelClass, this_soa, rseq, rcond);
     respE(:,:,ii) = p.r1([6 12],:);
 end
 
-respE = reshape(respE,[2,opt.nt,length(tauE_list),length(soas)]);
-respE_T1 = squeeze(sum(respE(1,:,:,1:end-2),2) ./ sum(respE(1,:,:,end),2));
-respE_T2 = squeeze(sum(respE(2,:,:,1:end-2),2) ./ sum(respE(2,:,:,end-1),2));
+respE = reshape(respE,[2,opt.nt,length(tauE_list),length(soas),length(contr_list)]);
+respE_T1 = squeeze(sum(respE(1,:,:,:,1),2) ./ sum(respE(1,:,:,:,3),2));
+respE_T2 = squeeze(sum(respE(2,:,:,:,1),2) ./ sum(respE(2,:,:,:,2),2));
 
 figure
 subplot(121)
-plot(soas(1:end-2),respE_T2)
+plot(soas,respE_T2)
 ylim([0 1.05])
 title('Repetition suppression')
 xlabel('SOA'), ylabel('Normalized response')
 
 subplot(122)
-plot(soas(1:end-2),respE_T1)
+plot(soas,respE_T1)
 ylim([0 1.05])
 title('Backwards masking')
 xlabel('SOA'), ylabel('Normalized response')
 
 % effect of suppressive time constant
 tauS_list = 0:50:500;
-soas = [100:100:1500 2000 2100];
+soas = 100:100:1500;
 loop_params = combvec(tauS_list,soas);
 
-respS = nan(2,opt.nt,length(loop_params));
+respS = nan(2,opt.nt,length(loop_params),3);
 parfor ii=1:length(loop_params)
     opt2 = opt;
     opt2.tauE1 = 0;
     opt2.tauS1 = loop_params(1,ii);
     this_soa = loop_params(2,ii);
-    if this_soa==2000 % repetition suppression baseline
-        opt2.stimContrasts = [0; .64];
-    elseif this_soa==2100 % backwards masking baseline
-        opt2.stimContrasts = [.64; 0];
-    else
-        opt2.stimContrasts = [.64; .64];
-    end
+    temp = nan(2,opt2.nt,3);
 
+    % baseline
+    opt2.stimContrasts = [.64; .64];
     [~,p,~] = runModel(opt2, modelClass, this_soa, rseq, rcond);
-    respS(:,:,ii) = p.r1([6 12],:);
+    temp(:,:,1) = p.r1([6 12],:);
+    
+    % repetition suppression
+    opt2.stimContrasts = [0; .64];
+    [~,p,~] = runModel(opt2, modelClass, this_soa, rseq, rcond);
+    temp(:,:,2) = p.r1([6 12],:);
+
+    % backwards masking
+    opt2.stimContrasts = [.64; 0];
+    [~,p,~] = runModel(opt2, modelClass, this_soa, rseq, rcond);
+    temp(:,:,3) = p.r1([6 12],:);
+
+    respS(:,:,ii,:) = temp;
 end
 
-respS = reshape(respS,[2,opt.nt,length(tauE_list),length(soas)]);
-respS_T1 = squeeze(sum(respS(1,:,:,1:end-2),2) ./ sum(respS(1,:,:,end),2));
-respS_T2 = squeeze(sum(respS(2,:,:,1:end-2),2) ./ sum(respS(2,:,:,end-1),2));
+respS = reshape(respS,[2,opt.nt,length(tauE_list),length(soas),3]);
+respS_T1 = squeeze(sum(respS(1,:,:,:,1),2) ./ sum(respS(1,:,:,:,3),2));
+respS_T2 = squeeze(sum(respS(2,:,:,:,1),2) ./ sum(respS(2,:,:,:,2),2));
 
 figure
 subplot(121)
-plot(soas(1:end-2),respS_T2)
+plot(soas,respS_T2)
 ylim([0 1.05])
 title('Repetition suppression')
 xlabel('SOA'), ylabel('Normalized response')
 
 subplot(122)
-plot(soas(1:end-2),respS_T1)
+plot(soas,respS_T1)
 ylim([0 1.05])
 title('Backwards masking')
+xlabel('SOA'), ylabel('Normalized response')
+
+% repetition suppression figures
+optD = opt;
+optD.tauE1 = 200;
+optD.stimContrasts = [.64;.64];
+[~,p,~] = runModel(optD, modelClass, 400, rseq, rcond);
+demo_rep(:,:,1) = p.r1([6 12],:);
+
+optD.stimContrasts = [0;.64];
+[~,p,~] = runModel(optD, modelClass, 400, rseq, rcond);
+demo_rep(:,:,2) = p.r1([6 12],:);
+
+figure
+subplot(131)
+plot(p.tlist-500, demo_rep(:,:,1), p.tlist-500, demo_rep(:,:,2))
+xlim([-200 2400]), ylim([0 1e-2])
+
+subplot(132)
+plot(soas,respE_T2)
+ylim([0 1.05])
+title('Excitatory')
+xlabel('SOA'), ylabel('Normalized response')
+
+subplot(133)
+plot(soas,respS_T2)
+ylim([0 1.05])
+title('Suppressive')
+xlabel('SOA'), ylabel('Normalized response')
+
+% repetition suppression figures
+optD = opt;
+optD.tauE1 = 200;
+
+demo_mask(:,:,1) = demo_rep(:,:,1);
+
+optD.stimContrasts = [.64;0];
+[~,p,~] = runModel(optD, modelClass, 400, rseq, rcond);
+demo_mask(:,:,2) = p.r1([6 12],:);
+
+figure
+subplot(131)
+plot(p.tlist-500, demo_mask(:,:,1), p.tlist-500, demo_mask(:,:,2))
+xlim([-200 2400]), ylim([0 1e-2])
+
+subplot(132)
+plot(soas,respE_T1)
+ylim([0 1.05])
+title('Excitatory')
+xlabel('SOA'), ylabel('Normalized response')
+
+subplot(133)
+plot(soas,respS_T1)
+ylim([0 1.05])
+title('Suppressive')
 xlabel('SOA'), ylabel('Normalized response')
 
 %% response for different parameter combinations

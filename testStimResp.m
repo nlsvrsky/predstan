@@ -79,10 +79,53 @@ end
 
 figure
 subplot(121)
-plot(p.tlist,squeeze(r1_E(6,:,:)./max(r1_E(6,:,:),[],2)))
+plot(p.tlist,squeeze(r1_E(6,:,:)./max(r1_E(6,p.tlist<1000,:),[],2)))
+ylim([0 1.2])
 
 subplot(122)
 plot(p.tlist,squeeze(r1_S(6,:,:)./max(r1_S(6,:,:),[],2)))
+ylim([0 1.2])
+
+% time to max
+figure
+subplot(121)
+plot(p.tlist,squeeze(r1_E(6,:,:)./max(r1_E(6,p.tlist<1000,:),[],2)))
+xlim([490 800])
+
+subplot(122)
+plot(p.tlist,squeeze(r1_S(6,:,:)./max(r1_S(6,:,:),[],2)))
+xlim([490 800])
+
+[~,r1_Emax_idx] = max(r1_E(6,p.tlist<1000,:),[],2);
+r1_Emax = squeeze(p.tlist(r1_Emax_idx));
+
+[~,r1_Smax_idx] = max(r1_S(6,:,:),[],2);
+r1_Smax = squeeze(p.tlist(r1_Smax_idx));
+
+figure
+subplot(121)
+plot(tauE_list,r1_Emax-500,'.-')
+xticks(tauE_list)
+xlim([0 850]), ylim([140 180])
+
+subplot(122)
+plot(tauE_list,r1_Smax-500,'.-')
+xticks(tauE_list)
+xlim([0 850]), ylim([30 70])
+
+% excitatory time to half max
+[~,r1_Eh] = min(abs(squeeze(r1_E(6,:,:)./max(r1_E(6,p.tlist<1000,:),[],2))-0.5));
+
+figure
+plot(tauE_list,p.tlist(r1_Eh)-1500,'.-')
+xticks(tauE_list)
+xlim([0 850]), ylim([0 2600])
+
+% suppressive stable activity level
+figure
+plot(tauE_list,squeeze(r1_S(6,p.tlist==1500,:)./max(r1_S(6,:,:),[],2)),'.-')
+xticks(tauE_list)
+xlim([0 850]), ylim([0 0.42])
 
 % examples of parameter combinations
 tauE_list = [100 100 500 500];
@@ -97,6 +140,7 @@ end
 
 figure
 plot(p.tlist,squeeze(r1_comb(6,:,:)./max(r1_comb(6,:,:),[],2)))
+ylim([0 1.2])
 
 
 %% subadditive responses
@@ -134,14 +178,16 @@ for ii=1:length(stimDur)
 end
 
 figure
-plot(p.tlist,squeeze(r1_dur(6,:,:)))
-xlim([0 2000])
+subplot(131)
+plot(p.tlist-500,squeeze(r1_dur(6,:,:)))
+xlim([-50 1500])
 
-figure
+subplot(132)
 plot(stimDur,squeeze(sum(r1_dur(6,:,:),2)))
+xticks(stimDur)
 ylim([0 6])
 
-figure
+subplot(133)
 plot(stimDur(2:end),squeeze(sum(r1_dur(6,:,2:end),2)./sum(r1_dur(6,:,1:end-1))))
 ylim([1 2])
 xticks(stimDur)
@@ -174,6 +220,7 @@ r1_durPS = reshape(sum(r1_durP2),5,4);
 
 figure
 plot(stimDur(2:end),r1_durPS(2:end,:)./r1_durPS(1:end-1,:))
+xticks(stimDur(2:end))
 ylim([1 2])
 
 %% repetition suppression
