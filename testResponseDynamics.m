@@ -9,6 +9,7 @@ opt.stimContrasts = [.64; .64];
 opt.scaling1 = 3e5;
 opt.scaling2 = 4e5;
 opt.aAI = 0;
+% opt.aAV = 0;
 
 opt.dt = 2;
 opt.T = 5.1*1000;
@@ -107,47 +108,43 @@ xlabel('SOA'), ylabel('Normalized response')
 %% response for different parameter combinations
 tauE_list = [100 500];
 tauS_list = [50  500];
+soas = 100:100:1500;
+contr_list = [.64 .64 0; .64 0 .64];
 
-loop_params = combvec(tauE_list,tauS_list,soas);
+loop_params = combvec(tauE_list,tauS_list,soas,contr_list);
 respC = nan(2,opt.nt,length(loop_params));
 parfor ii=1:length(loop_params)
     opt2 = opt;
     opt2.tauE1 = loop_params(1,ii);
     opt2.tauS1 = loop_params(2,ii);
     this_soa = loop_params(3,ii);
-    if this_soa==2000 % repetition suppression baseline
-        opt2.stimContrasts = [0; .64];
-    elseif this_soa==2100 % backwards masking baseline
-        opt2.stimContrasts = [.64; 0];
-    else
-        opt2.stimContrasts = [.64; .64];
-    end
+    opt2.stimContrasts = loop_params(4:5,ii);
 
     [~,p,~] = runModel(opt2, modelClass, this_soa, rseq, rcond);
     respC(:,:,ii) = p.r1([6 12],:);
 end
 
-respC = reshape(respC,[2,opt.nt,length(tauE_list)*length(tauS_list),length(soas)]);
-respC_T1 = squeeze(sum(respC(1,:,:,1:end-2),2) ./ sum(respC(1,:,:,end),2));
-respC_T2 = squeeze(sum(respC(2,:,:,1:end-2),2) ./ sum(respC(2,:,:,end-1),2));
+respC = reshape(respC,[2,opt.nt,length(tauE_list)*length(tauS_list),length(soas),3]);
+respC_T1 = squeeze(sum(respC(1,:,:,:,1),2) ./ sum(respC(1,:,:,:,2),2));
+respC_T2 = squeeze(sum(respC(2,:,:,:,1),2) ./ sum(respC(2,:,:,:,3),2));
 
 figure
 subplot(121)
-plot(soas(1:end-2),respC_T2(1,:),'r-', ...
-     soas(1:end-2),respC_T2(2,:),'b-', ...
-     soas(1:end-2),respC_T2(3,:),'r--', ...
-     soas(1:end-2),respC_T2(4,:),'b--')
+plot(soas,respC_T2(1,:),'b-', ...
+     soas,respC_T2(2,:),'r-', ...
+     soas,respC_T2(3,:),'b--', ...
+     soas,respC_T2(4,:),'r--')
 ylim([0 1.05])
 title('Repetition suppression')
 xlabel('SOA'), ylabel('Normalized response')
 
 subplot(122)
-plot(soas(1:end-2),respC_T1(1,:),'r-', ...
-     soas(1:end-2),respC_T1(2,:),'b-', ...
-     soas(1:end-2),respC_T1(3,:),'r--', ...
-     soas(1:end-2),respC_T1(4,:),'b--')
+plot(soas,respC_T1(1,:),'b-', ...
+     soas,respC_T1(2,:),'r-', ...
+     soas,respC_T1(3,:),'b--', ...
+     soas,respC_T1(4,:),'r--')
 ylim([0 1.05])
 title('Backwards masking')
 xlabel('SOA'), ylabel('Normalized response')
 
-legend({'E: 100, S: 50','E: 100, S: 500','E: 500, S: 50','E: 500, S: 500'})
+legend({'E: 100, S: 50','E: 500, S: 50','E: 100, S: 500','E: 500, S: 500'})
