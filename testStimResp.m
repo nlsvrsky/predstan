@@ -2,7 +2,7 @@
 
 opt = [];
 modelClass = [];
-rsoa = 1001; % SOA = 250 ms (see runModel)
+rsoa = 2001; % SOA = 250 ms (see runModel)
 rseq = []; % default orientation sequence
 rcond = 3; % cueT1, cueT2
 soas = [100:50:500 800];
@@ -14,10 +14,11 @@ soas = [100:50:500 800];
 % opt.stimContrasts = [.64 .64 .32 .32; ...
 %                      .64 .32 .64 .32];
 opt.stimContrasts = [.64; 0];
-opt.stimDur = 1000;
+opt.stimDur = 2000;
 opt.scaling1 = 5e5;
 opt.scaling2 = 6e5;
-% opt.aAI = 1e2;
+opt.aAI = 0;
+opt.aAV = 0;
 
 opt.eScale = 1;
 opt.sScale = 50;
@@ -42,13 +43,13 @@ opt.tauS1 = 50;
 
 % opt.tauD = 500;
 % opt.tR = 2;
-opt.aAV = 2e2;
+% opt.aAV = 2e2;
 % opt.AVWeights = [1 1];
 % opt.AVNeutralT1Weight = 0.25;
 % opt.distributeVoluntary = 0;
 
 opt.dt = 2;
-opt.T = 4.1*1000;
+opt.T = 8.1*1000;
 opt.nt = opt.T/opt.dt+1;
 opt.tlist = 0:opt.dt:opt.T;
 
@@ -58,23 +59,19 @@ opt.display.plotPerf = 0;
 tauE_list = [50 100:100:800];
 r1_E = nan(12,opt.nt,length(tauE_list));
 r1_S = nan(12,opt.nt,length(tauE_list));
-d1_S = nan(12,opt.nt,length(tauE_list));
-s1_S = nan(12,opt.nt,length(tauE_list));
-f1_S = nan(12,opt.nt,length(tauE_list));
 
 for ii=1:length(tauE_list)
     opt.tauE1 = tauE_list(ii);
     opt.tauS1 = 0;
     [~,p,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);
     r1_E(:,:,ii) = p.r1;
+    pE(ii) = p;
 
     opt.tauS1 = tauE_list(ii);
     opt.tauE1 = 0;
     [~,p,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);
     r1_S(:,:,ii) = p.r1;
-    d1_S(:,:,ii) = p.d1;
-    s1_S(:,:,ii) = p.s1;
-    f1_S(:,:,ii) = p.f1;
+    pS(ii) = p;
 end
 
 figure
@@ -127,6 +124,36 @@ plot(tauE_list,squeeze(r1_S(6,p.tlist==1500,:)./max(r1_S(6,:,:),[],2)),'.-')
 xticks(tauE_list)
 xlim([0 850]), ylim([0 0.42])
 
+% time to peak / half max / stable
+fig1_ttp = nan(2,9);
+fig1_tthm = nan(1,9);
+for ii=1:length(tauE_list)
+    fig1_ttp(1,ii) = p.tlist(find(r1_E(6,:,ii)>max(r1_E(6,:,ii))*.99,1))-500;
+    fig1_ttp(2,ii) = p.tlist(find(r1_S(6,:,ii)==max(r1_S(6,:,ii)),1))-500;
+
+    fig1_tthm(ii) = p.tlist(find(r1_E(6,1250:end,ii)<max(r1_E(6,:,ii))*.5,1));
+end
+
+% time to peak
+figure
+subplot(121)
+plot(tauE_list,fig1_ttp(1,:))
+axis([0 850 200 1200])
+
+subplot(122)
+plot(tauE_list,fig1_ttp(2,:))
+axis([0 850 30 60])
+
+% excitatory half max
+figure
+plot(tauE_list,fig1_tthm)
+axis([0 850 0 3000])
+
+% suppressive stable level
+figure
+plot(tauE_list,squeeze(r1_S(6,1250,:)./max(r1_S(6,:,:),[],2)))
+axis([0 850 0 0.6])
+
 % examples of parameter combinations
 tauE_list = [100 100 500 500];
 tauS_list = [50  500  50 500];
@@ -154,6 +181,7 @@ opt.stimContrasts = [.64; 0];
 opt.scaling1 = 3e5;
 opt.scaling2 = 4e5;
 opt.aAI = 0;
+opt.aAV = 0;
 
 opt.eScale = 1;
 opt.sScale = 50;
@@ -179,8 +207,8 @@ end
 
 figure
 subplot(131)
-plot(p.tlist-500,squeeze(r1_dur(6,:,:)))
-xlim([-50 1500])
+plot(p.tlist,squeeze(r1_dur(6,:,:)))
+xlim([0 2000])
 
 subplot(132)
 plot(stimDur,squeeze(sum(r1_dur(6,:,:),2)))
@@ -236,19 +264,19 @@ opt.stimContrasts = [.64; .64];
 opt.stimDur = 500;
 opt.scaling1 = 5e5;
 opt.scaling2 = 6e5;
-% opt.aAI = 1e2;
+opt.aAI = 0;
 
 opt.eScale = 1;
 opt.sScale = 50;
 
 opt.tauE1 = 100;
 opt.tauS1 = 50;
-opt.aAV = 2e2;
+opt.aAV = 0;
 
 opt.display.plotTS = 0; % plot the time series for each simulation
 opt.display.plotPerf = 0;
 
-tauE_list = [50 100:100:800];
+tauE_list = [0 50 100:100:800];
 
 % opt.dt = 2;
 % opt.T = 4.1*1000;
