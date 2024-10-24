@@ -250,6 +250,11 @@ opt.display.plotPerf = 0;
 
 tauE_list = [50 100:100:800];
 
+% opt.dt = 2;
+% opt.T = 4.1*1000;
+% opt.nt = opt.T/opt.dt+1;
+% opt.tlist = 0:opt.dt:opt.T;
+
 for ii=1:length(tauE_list)
     % two stim
     opt.stimContrasts = [.64; .64];
@@ -269,7 +274,7 @@ for ii=1:length(tauE_list)
     opt.tauS1 = tauE_list(ii);
     [~,p,~] = runModel(opt, modelClass, rsoa, rseq, rcond);
     r1_S2(:,:,ii) = p.r1;
-    
+
     % one stim
     opt.stimContrasts = [0; .64];
     [~,p,~] = runModel(opt, modelClass, rsoa, rseq, rcond);
