@@ -35,6 +35,20 @@ else
     p.modelClass  = 'Main';
 end
 
+%% Stim mode
+% allows for randomized stim input for reverse correlation analysis
+if isfield(opt,'stimMode')
+    switch opt.stimMode
+        case {'standard','random'}
+            % ok
+        otherwise
+            error('stimMode must be "standard" or "random".')
+    end
+    p.stimMode = opt.stimMode;
+else
+    p.stimMode = 'standard';
+end
+
 %% Time
 p.dt              = 2;              % time-step (ms)
 p.T               = 2.1*1000;       % duration (ms)
