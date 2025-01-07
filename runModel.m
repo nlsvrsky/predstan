@@ -138,12 +138,8 @@ for icond = 1:numel(rcond)
                 end
                 
                 % set time series
-                p.stim = zeros(4,length(p.tlist));
-                p.stim(1,:) = randi([0 1],1,length(p.tlist));
-                p.stimContrast = p.stim;
-
                 p = initTimeSeries(p);
-%                 p = setStim(p);
+                p = setStim(p);
                 p = setTask(p,condname);
                 p = setDecisionWindows(p);
                 p = setTemporalWindows(p);
