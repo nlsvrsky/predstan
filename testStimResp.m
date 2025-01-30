@@ -21,12 +21,12 @@ opt.aAI = 0;
 opt.aAV = 0;
 
 opt.eScale = 1;
-opt.sScale = 50;
+opt.sScale = 1;
 
 opt.tauE1 = 100;
 opt.tauS1 = 50;
 % opt.tau1 = 2;
-% opt.sigma1 = .01;
+opt.sigma1 = .1;
 
 % opt.tauE2 = 0;
 % opt.tauS2 = 0;
@@ -60,78 +60,79 @@ tauE_list = [50 100:100:800];
 r1_E = nan(12,opt.nt,length(tauE_list));
 r1_S = nan(12,opt.nt,length(tauE_list));
 
-for ii=1:length(tauE_list)
-    opt.tauE1 = tauE_list(ii);
-    opt.tauS1 = 0;
-    [~,p,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);
+parfor ii=1:length(tauE_list)
+    opt2 = opt;
+    opt2.tauE1 = tauE_list(ii);
+    opt2.tauS1 = 0;
+    [~,p,perf] = runModel(opt2, modelClass, rsoa, rseq, rcond);
     r1_E(:,:,ii) = p.r1;
     pE(ii) = p;
 
-    opt.tauS1 = tauE_list(ii);
-    opt.tauE1 = 0;
-    [~,p,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);
+    opt2.tauS1 = tauE_list(ii);
+    opt2.tauE1 = 0;
+    [~,p,perf] = runModel(opt2, modelClass, rsoa, rseq, rcond);
     r1_S(:,:,ii) = p.r1;
     pS(ii) = p;
 end
 
 figure
 subplot(121)
-plot(p.tlist,squeeze(r1_E(6,:,:)./max(r1_E(6,p.tlist<1000,:),[],2)))
+plot(opt.tlist,squeeze(r1_E(6,:,:)./max(r1_E(6,opt.tlist<2500,:),[],2)))
 ylim([0 1.2])
 
 subplot(122)
-plot(p.tlist,squeeze(r1_S(6,:,:)./max(r1_S(6,:,:),[],2)))
+plot(opt.tlist,squeeze(r1_S(6,:,:)./max(r1_S(6,:,:),[],2)))
 ylim([0 1.2])
 
 % time to max
 figure
 subplot(121)
-plot(p.tlist,squeeze(r1_E(6,:,:)./max(r1_E(6,p.tlist<1000,:),[],2)))
+plot(opt.tlist,squeeze(r1_E(6,:,:)./max(r1_E(6,opt.tlist<2500,:),[],2)))
 xlim([490 800])
 
 subplot(122)
-plot(p.tlist,squeeze(r1_S(6,:,:)./max(r1_S(6,:,:),[],2)))
+plot(opt.tlist,squeeze(r1_S(6,:,:)./max(r1_S(6,:,:),[],2)))
 xlim([490 800])
 
-[~,r1_Emax_idx] = max(r1_E(6,p.tlist<1000,:),[],2);
-r1_Emax = squeeze(p.tlist(r1_Emax_idx));
+[~,r1_Emax_idx] = max(r1_E(6,opt.tlist<2500,:),[],2);
+r1_Emax = squeeze(opt.tlist(r1_Emax_idx));
 
 [~,r1_Smax_idx] = max(r1_S(6,:,:),[],2);
-r1_Smax = squeeze(p.tlist(r1_Smax_idx));
+r1_Smax = squeeze(opt.tlist(r1_Smax_idx));
 
 figure
 subplot(121)
 plot(tauE_list,r1_Emax-500,'.-')
 xticks(tauE_list)
-xlim([0 850]), ylim([140 180])
+xlim([0 850])%, ylim([140 180])
 
 subplot(122)
 plot(tauE_list,r1_Smax-500,'.-')
 xticks(tauE_list)
-xlim([0 850]), ylim([30 70])
+xlim([0 850]), ylim([30 60])
 
 % excitatory time to half max
-[~,r1_Eh] = min(abs(squeeze(r1_E(6,:,:)./max(r1_E(6,p.tlist<1000,:),[],2))-0.5));
+[~,r1_Eh] = min(abs(squeeze(r1_E(6,:,:)./max(r1_E(6,opt.tlist<2500,:),[],2))-0.5));
 
 figure
-plot(tauE_list,p.tlist(r1_Eh)-1500,'.-')
+plot(tauE_list,opt.tlist(r1_Eh)-2500,'.-')
 xticks(tauE_list)
-xlim([0 850]), ylim([0 2600])
+xlim([0 850])%, ylim([0 3000])
 
 % suppressive stable activity level
 figure
-plot(tauE_list,squeeze(r1_S(6,p.tlist==1500,:)./max(r1_S(6,:,:),[],2)),'.-')
+plot(tauE_list,squeeze(r1_S(6,opt.tlist==2500,:)./max(r1_S(6,:,:),[],2)),'.-')
 xticks(tauE_list)
-xlim([0 850]), ylim([0 0.42])
+xlim([0 850]), ylim([0 0.6])
 
 % time to peak / half max / stable
 fig1_ttp = nan(2,9);
 fig1_tthm = nan(1,9);
 for ii=1:length(tauE_list)
-    fig1_ttp(1,ii) = p.tlist(find(r1_E(6,:,ii)>max(r1_E(6,:,ii))*.99,1))-500;
-    fig1_ttp(2,ii) = p.tlist(find(r1_S(6,:,ii)==max(r1_S(6,:,ii)),1))-500;
+    fig1_ttp(1,ii) = opt.tlist(find(r1_E(6,:,ii)>max(r1_E(6,:,ii))*.99,1))-500;
+    fig1_ttp(2,ii) = opt.tlist(find(r1_S(6,:,ii)==max(r1_S(6,:,ii)),1))-500;
 
-    fig1_tthm(ii) = p.tlist(find(r1_E(6,1250:end,ii)<max(r1_E(6,:,ii))*.5,1));
+    fig1_tthm(ii) = opt.tlist(find(r1_E(6,1250:end,ii)<max(r1_E(6,:,ii))*.5,1));
 end
 
 % time to peak
@@ -167,7 +168,7 @@ end
 
 figure
 plot(p.tlist,squeeze(r1_comb(6,:,:)./max(r1_comb(6,:,:),[],2)))
-ylim([0 1.2])
+axis([0 8500 0 1.2])
 
 
 %% subadditive responses
@@ -184,10 +185,11 @@ opt.aAI = 0;
 opt.aAV = 0;
 
 opt.eScale = 1;
-opt.sScale = 50;
+opt.sScale = 1;
 
 opt.tauE1 = 100;
 opt.tauS1 = 50;
+opt.sigma1 = 0.1;
 
 opt.dt = 2;
 opt.T = 4.1*1000;
@@ -213,7 +215,7 @@ xlim([0 2000])
 subplot(132)
 plot(stimDur,squeeze(sum(r1_dur(6,:,:),2)))
 xticks(stimDur)
-ylim([0 6])
+ylim([0 300])
 
 subplot(133)
 plot(stimDur(2:end),squeeze(sum(r1_dur(6,:,2:end),2)./sum(r1_dur(6,:,1:end-1))))
@@ -265,13 +267,14 @@ opt.stimDur = 500;
 opt.scaling1 = 5e5;
 opt.scaling2 = 6e5;
 opt.aAI = 0;
+opt.aAV = 0;
 
 opt.eScale = 1;
-opt.sScale = 50;
+opt.sScale = 1;
 
 opt.tauE1 = 100;
 opt.tauS1 = 50;
-opt.aAV = 0;
+opt.sigma1 = 0.1;
 
 opt.display.plotTS = 0; % plot the time series for each simulation
 opt.display.plotPerf = 0;

@@ -1,29 +1,32 @@
 
 opt = [];
 modelClass = [];
-rsoa = 10; % SOA = 250 ms (see runModel)
+rsoa = 250; % SOA = 250 ms (see runModel)
 rseq = []; % default orientation sequence
-rcond = 3; % cueT1, cueT2
+rcond = [3]; % cueT1, cueT2
 soas = [100:50:500 800];
 
 % H/H, H/L, L/H, L/L
-% opt.stimContrasts = [.9; .9];
+% opt.stimContrasts = [.64; .64];
 % opt.stimContrasts = [.64 .64 .16 .16; ...
 %                      .64 .16 .64 .16];
 opt.stimContrasts = [.64 .64 .32 .32; ...
                      .64 .32 .64 .32];
-% opt.stimContrasts = [.64; .64];
-opt.scaling1 = 3e5;
-opt.scaling2 = 4e5;
+% opt.stimContrasts = [.64; .32];
+opt.scaling1 = 1e4;
+opt.scaling2 = 1e4;
 opt.aAI = 0;
+opt.aAV = 0;
 
 opt.eScale = 1;
-opt.sScale = 50;
+opt.sScale = 1;
 
-opt.tauE1 = 900;
-opt.tauS1 = 900;
+% opt.ntheta = 90;
+
+opt.tauE1 = 400;
+opt.tauS1 = 100;
 % opt.tau1 = 2;
-% opt.sigma1 = .01;
+opt.sigma1 = .1;
 
 % opt.tauE2 = 0;
 % opt.tauS2 = 0;
@@ -45,10 +48,15 @@ opt.tauS1 = 900;
 % opt.AVNeutralT1Weight = 0.25;
 % opt.distributeVoluntary = 1;
 
+opt.dt = 2;
+% opt.T = 8.1*1000;
+% opt.nt = opt.T/opt.dt+1;
+% opt.tlist = 0:opt.dt:opt.T;
+
 opt.display.plotTS = 0; % plot the time series for each simulation
 opt.display.plotPerf = 0;
 
-[~,~,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);
+[~,p,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);
 
 if isempty(rcond)
     perf = squeeze(perf);

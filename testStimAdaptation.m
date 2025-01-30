@@ -2,7 +2,7 @@
 
 opt = [];
 modelClass = [];
-rsoa = 4; % SOA = 250 ms (see runModel)
+rsoa = 500; % SOA = 250 ms (see runModel)
 rseq = 3; % default orientation sequence
 rcond = 3; % cueT1, cueT2
 soas = [100:50:500 800];
@@ -44,4 +44,4 @@ opt.tauS1 = 50;
 opt.display.plotTS = 1; % plot the time series for each simulation
 opt.display.plotPerf = 0;
 
-[~,~,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);
+[~,p,perf] = runModel(opt, modelClass, rsoa, rseq, rcond);

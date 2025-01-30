@@ -34,7 +34,7 @@ s1_out = nan(nSim,opt.nt);
 f1_out = nan(nSim,opt.nt);
 r1_out = nan(nSim,opt.nt);
 
-paramList = combvec(1:nSim,[0 100 400; 0 400 100]);
+paramList = combvec(1:nSim,[400; 100]);%[0 100 400; 0 400 100]);
 
 parfor ii=1:length(paramList)
     opt2 = opt;
