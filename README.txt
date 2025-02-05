@@ -1,19 +1,20 @@
 README
 
-Code for normalization model of dynamic attention
-Rachel Denison
-January 2020
+Code for dyanmic spatiotemporal normalization model (D-STAN)
+Angus Chapman [angusc@bu.edu]
+January 2025
 
 Reference:
-"A dynamic normalization model of temporal attention"
-Rachel N. Denison, Marisa Carrasco, David J. Heeger
+"A dynamic spatiotemporal normalization model for continuous vision"
+Angus F. Chapman & Rachel N. Denison
 
 Instructions:
 The model code is a library of MATLAB functions. Put the directory on your computer and run the code from this directory in MATLAB.
 
-If you are new to this code, start with demo.m. This function demonstrates how to run the model. Each cell shows how to select certain options and run the model using those options.
+Main code used in the analyses reported in the manuscript are in the home directory, while core model code is located in the 'model' subdirectory.
 
-The function setParameters.m lists all model parameters and can be used to set the default parameters. Preloaded default settings are based on the “Main” model fit reported in the manuscript.
-
-For reference, the purpose of each function is briefly described in listOfFunctions.m.
-
+- demoResults.m: produces example analyses for each result, consistent with several figures shown in the manuscript
+- testRandomSeq.m: performs reverse correlation analyses with random stimulus sequences (computationally intensive)
+- fitRandFunctions.m: summarizes reverse correlation analyses and fits difference of Gammas to sensory responses (computationally intensive)
+- testResponseAdaptation_[iden/orth].m: analyses response adaptation for identical/orthogonal stimulus sequences (computationally intensive)
+- testBackwardMasking.m: analyses backward masking (computationally intensive)
