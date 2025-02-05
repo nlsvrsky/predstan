@@ -17,6 +17,81 @@ opt.sigma1 = 0.1;
 opt.display.plotTS = 0; % plot the time series for each simulation
 opt.display.plotPerf = 0;
 
+%% transient / sustained dynamics
+
+opt.stimContrasts = [.64; 0];
+opt.stimDur = 2000;
+
+opt.dt = 2;
+opt.T = 8.1*1000;
+opt.nt = opt.T/opt.dt+1;
+opt.tlist = 0:opt.dt:opt.T;
+
+tau_list = [50 100:100:800];
+r1_E = nan(12,opt.nt,length(tau_list));
+r1_S = nan(12,opt.nt,length(tau_list));
+
+% can parfor this for faster execution if needed - takes a while because of
+% the longer analysis window
+for ii=1:length(tau_list)
+    % varying excitatory tau
+    opt2 = opt;
+    opt2.tauE1 = tau_list(ii);
+    opt2.tauS1 = 0;
+    [~,p,~] = runModel(opt2, modelClass, rsoa, rseq, rcond);
+    r1_E(:,:,ii) = p.r1;
+
+    % varying suppressive tau
+    opt2.tauS1 = tau_list(ii);
+    opt2.tauE1 = 0;
+    [~,p,~] = runModel(opt2, modelClass, rsoa, rseq, rcond);
+    r1_S(:,:,ii) = p.r1;
+end
+
+% plot response timecourses
+figure
+subplot(121)
+plot(opt.tlist,squeeze(r1_E(6,:,:)./max(r1_E(6,:,:),[],2)))
+axis([0 8500 0 1.2])
+
+subplot(122)
+plot(opt.tlist,squeeze(r1_S(6,:,:)./max(r1_S(6,:,:),[],2)))
+axis([0 8500 0 1.2])
+
+% time to peak / half max / stable
+resp_ttp = nan(2,9);
+resp_tthm = nan(1,9);
+for ii=1:length(tau_list)
+    resp_ttp(1,ii) = opt.tlist(find(r1_E(6,:,ii)>max(r1_E(6,:,ii))*.99,1))-500;
+    resp_ttp(2,ii) = opt.tlist(find(r1_S(6,:,ii)==max(r1_S(6,:,ii)),1))-500;
+
+    resp_tthm(ii) = opt.tlist(find(r1_E(6,1250:end,ii)<max(r1_E(6,:,ii))*.5,1));
+end
+
+% time to peak
+figure
+subplot(141)
+plot(tau_list,resp_ttp(1,:))
+axis([0 850 200 1200])
+title('Exc time to peak')
+
+subplot(142)
+plot(tau_list,resp_ttp(2,:))
+axis([0 850 30 60])
+title('Supp time to peak')
+
+% excitatory half max
+subplot(143)
+plot(tau_list,resp_tthm)
+axis([0 850 0 3000])
+title('Exc half max')
+
+% suppressive stable level
+subplot(144)
+plot(tau_list,squeeze(r1_S(6,1250,:)./max(r1_S(6,:,:),[],2)))
+axis([0 850 0 0.6])
+title('Supp stable level')
+
 %% subadditivity
 
 opt.tauE1 = 100;
