@@ -6,6 +6,8 @@
 ncores = str2num(getenv("NSLOTS"));
 pool = parpool(ncores);
 
+addpath('model');
+
 %% model setup
 opt = [];
 modelClass = [];

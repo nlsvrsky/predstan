@@ -9,6 +9,8 @@ ncores = str2num(getenv("NSLOTS"));
 pool = parpool(ncores);
 fprintf("Parpool started\n");
 
+addpath('model');
+
 %% model setup
 opt = [];
 modelClass = [];
