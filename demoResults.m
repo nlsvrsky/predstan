@@ -1,5 +1,9 @@
 %% D-STAN results
 %  Example code demonstrating each of the main results from our manuscript
+%  Some analyses assume you have downloaded the corresponding .mat files
+%  from the associated OSF repository and stored them in an 'output'
+%  subfolder.
+%  OSF link: https://osf.io/qy9pa/
 
 addpath('model');
 
@@ -16,6 +20,47 @@ opt.sigma1 = 0.1;
 
 opt.display.plotTS = 0; % plot the time series for each simulation
 opt.display.plotPerf = 0;
+
+%% reverse correlation
+load('output/revCorFits.mat');
+
+% 10 x 10 taus (exc/supp, 0-900 ms) x 601 timepoints (3000 ms at 5 ms spacing)
+rc_d1 = reshape(rc_out.d1,10,10,601);
+rc_s1 = reshape(rc_out.s1,10,10,601);
+rc_r1 = reshape(rc_out.r1,10,10,601);
+
+% figures for tauE = 400, tauS = 100
+t = -3000:5:0;
+
+figure
+subplot(131)
+plot(t,squeeze(rc_d1(5,2,:)))
+xlim([-1200 0])
+
+subplot(132)
+plot(t,squeeze(rc_s1(5,2,:)))
+xlim([-1200 0])
+
+subplot(133)
+plot(t,squeeze(rc_r1(5,2,:)))
+xlim([-1200 0])
+
+% difference of Gamma fits for all tau combinations
+diffOfGamma = @(p,t) p(4,:)'.*(t.*exp(t./p(1,:)') - p(3,:)'.*t.*exp(t./p(2,:)'));
+
+rc_fit = diffOfGamma(rc_out.fitParams,-3000:5:0);
+rc_fit = reshape(rc_fit,10,10,601);
+
+figure
+subplot(121)
+plot(-3000:5:0,squeeze(rc_fit(2:end,5,:)))
+xlim([-1200 0])
+title('tauE = 400 ms')
+
+subplot(122)
+plot(-3000:5:0,squeeze(rc_fit(5,2:end,:)))
+xlim([-1200 0])
+title('tauS = 400 ms')
 
 %% transient / sustained dynamics
 
@@ -165,6 +210,25 @@ plot(opt.tlist,r1_iden(:,:,2))
 xlim([0 2500])
 legend({'T1 present','T1 absent'})
 
+% effect of taus on response adaptation
+load('output/respAdapt_iden.mat');
+r1_iden = reshape(r1_iden(:,6,:),10,10,16,3501);
+
+% we have 10 taus [0,50,100:100:800] and 15 SOAs (+1 for T1 absent)
+% see Eqn 11
+ra_iden = 1 - sum(r1_iden(:,:,2:end,:)-r1_iden(:,:,1,:),4)./sum(r1_iden(:,:,1,:),4);
+
+figure
+subplot(121)
+plot(100:100:1500,squeeze(ra_iden(:,1,:)))
+ylim([-.1 1])
+title('tauE')
+
+subplot(122)
+plot(100:100:1500,squeeze(ra_iden(1,:,:)))
+ylim([-.1 1])
+title('tauS')
+
 %% response adaptation in non-identical stimuli
 %  similar to before, but now we run a sequence with different orientations
 
@@ -196,6 +260,25 @@ plot(opt.tlist,r1_orth(:,:,1,2),...
      opt.tlist,r1_orth(:,:,2,2))
 xlim([0 2500])
 legend({'T1, T1 present','T2, T1 present','T1, T1 absent','T2, T1 absent'})
+
+% effect of taus on response adaptation
+load('output/respAdapt_orth.mat');
+r1_orth = reshape(r1_orth(:,[6 12],:),10,10,16,2,3501);
+
+% we have 10 taus [0,50,100:100:800] and 15 SOAs (+1 for T1 absent)
+% see Eqn 12
+ra_orth = 1 - sum(r1_orth(:,:,2:end,2,:),5)./sum(r1_orth(:,:,1,1,:),5);
+
+figure
+subplot(121)
+plot(100:100:1500,squeeze(ra_orth(:,1,:)))
+ylim([-.1 1])
+title('tauE')
+
+subplot(122)
+plot(100:100:1500,squeeze(ra_orth(1,:,:)))
+ylim([-.1 1])
+title('tauS')
 
 %% backward masking
 
@@ -232,6 +315,25 @@ plot(opt.tlist,r1_mask(:,:,1,2),...
      opt.tlist,r1_mask(:,:,2,2))
 xlim([0 2500])
 legend({'T1, T1 present','T2, T1 present','T1, T1 absent','T2, T1 absent'})
+
+% effect of taus on backward masking
+load('output/backwardMask.mat');
+r1_mask = reshape(r1_mask(:,[6 12],:),10,10,16,2,3501);
+
+% we have 10 taus [0,50,100:100:800] and 15 SOAs (+1 for T1 absent)
+% see Eqn 12
+ra_mask = 1 - sum(r1_mask(:,:,2:end,1,:),5)./sum(r1_mask(:,:,1,2,:),5);
+
+figure
+subplot(121)
+plot(100:100:1500,squeeze(ra_mask(:,1,:)))
+ylim([-.1 1])
+title('tauE')
+
+subplot(122)
+plot(100:100:1500,squeeze(ra_mask(1,:,:)))
+ylim([-.1 1])
+title('tauS')
 
 %% Contrast-dependent suppression
 
@@ -306,3 +408,22 @@ axis([[.8 2.2] [0 2.5]])
 xticks(1:2)
 xticklabels({'T2 low','T2 high'})
 legend({'T1 high','T1 low'})
+
+% contrast-dependent suppression as a function of taus
+load('output/contrDepSupp.mat');
+
+figure
+subplot(131)
+imagesc(0:50:1000,0:50:1000,perf_T1')
+axis square
+title('T1 modulation')
+
+subplot(132)
+imagesc(0:50:1000,0:50:1000,perf_T2')
+axis square
+title('T2 modulation')
+
+subplot(133)
+imagesc(0:50:1000,0:50:1000,perf_T1'.*perf_T2')
+axis square
+title('Joint modulation')
