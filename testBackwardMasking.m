@@ -34,7 +34,7 @@ soaList = [0 100:100:1500];
 
 paramList = combvec(tauList,tauList,soaList);
 
-r1_out = nan(length(paramList),12,opt.nt);
+r1_mask = nan(length(paramList),12,opt.nt);
 
 parfor ii=1:length(paramList)
     opt2 = opt;
@@ -51,7 +51,7 @@ parfor ii=1:length(paramList)
     end
 
     [~,p,~] = runModel(opt2, modelClass, thisSOA, rseq, rcond);
-    r1_out(ii,:,:) = p.r1;
+    r1_mask(ii,:,:) = p.r1;
 end
 
-save('output/backMask.mat','r1_out');
+save('output/backwardMask.mat','r1_mask');

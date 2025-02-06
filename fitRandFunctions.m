@@ -51,10 +51,10 @@ parfor ii=1:100
     f1s(ii,:) = sum(tempOut.out.f1(:,end).*tempOut.out.stimList)./sum(tempOut.out.stimList)-mean(tempOut.out.f1(:,end));
 end
 
-out.fitParams = fitParams;
-out.r1 = r1s;
-out.d1 = d1s;
-out.s1 = s1s;
-out.f1 = f1s;
+rc_out.fitParams = fitParams;
+rc_out.r1 = r1s;
+rc_out.d1 = d1s;
+rc_out.s1 = s1s;
+rc_out.f1 = f1s;
 
-save('output/randSeqFits.mat','out');
+save('output/revCorFits.mat','rc_out');

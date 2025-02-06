@@ -34,8 +34,8 @@ contrList = [.64 .64 .32; .64 .32 .64];
 
 paramList = combvec(tauList,tauList,contrList);
 
-perf_out = nan(2,length(params));
-parfor ii=1:length(params)
+perf_out = nan(2,length(paramList));
+parfor ii=1:length(paramList)
     opt2 = opt;
     opt2.stimContrasts = paramList(3:4,ii);
     opt2.tauE1 = paramList(1,ii);
