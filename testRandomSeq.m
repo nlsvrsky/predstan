@@ -3,7 +3,7 @@ function testRandomSeq
 % and was run through the Boston University SCC - adjustments to the code
 % are likely necessary to reproduce the analyses
 
-% data output is available on our OSF repository:
+% data output is available on our OSF repository: https://osf.io/qy9pa/
 
 ncores = str2num(getenv("NSLOTS"));
 pool = parpool(ncores);

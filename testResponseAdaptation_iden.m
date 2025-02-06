@@ -1,7 +1,7 @@
 % this codes generates model output used for response adaptation analyses
 % with identical stimuli in a sequence and was run on the BU SCC
 
-% data output is available on our OSF repository:
+% data output is available on our OSF repository: https://osf.io/qy9pa/
 
 ncores = str2num(getenv("NSLOTS"));
 pool = parpool(ncores);

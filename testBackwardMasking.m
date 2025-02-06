@@ -1,7 +1,7 @@
 % this codes generates model output used for backward masking analyses
 % and was run on the BU SCC
 
-% data output is available on our OSF repository:
+% data output is available on our OSF repository: https://osf.io/qy9pa/
 
 ncores = str2num(getenv("NSLOTS"));
 pool = parpool(ncores);
