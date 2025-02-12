@@ -158,21 +158,33 @@ end
 
 % responses in best neuron
 figure
-subplot(131)
 plot(p.tlist,squeeze(r1_dur(6,:,:)))
 xlim([0 2000])
 
 % summed response over time for each duration
-subplot(132)
+figure
 plot(stimDur,squeeze(sum(r1_dur(6,:,:),2)))
 xticks(stimDur)
 ylim([0 300])
 
-% quantifying subaddtivity
-subplot(133)
-plot(stimDur(2:end),squeeze(sum(r1_dur(6,:,2:end),2)./sum(r1_dur(6,:,1:end-1))))
+% effect of taus on subadditivity
+load('output/respSubadd.mat');
+r1_sub = reshape(r1_sub(:,6,:),10,10,5,3501);
+
+% we have 10 taus [0,50,100:100:800] and 5 stim durations
+% divide each response by the previous duration
+ra_sub = squeeze(sum(r1_sub(:,:,2:end,:),4)./sum(r1_sub(:,:,1:end-1,:),4));
+
+figure
+subplot(121)
+plot(durList(2:end),squeeze(ra_sub(:,1,:)))
 ylim([1 2])
-xticks(stimDur)
+title('tauE')
+
+subplot(122)
+plot(durList(2:end),squeeze(ra_sub(1,:,:)))
+ylim([1 2])
+title('tauS')
 
 %% response adaptation
 %  first we show response adaptation for repeating an identical stimulus
@@ -181,6 +193,11 @@ opt.stimDur = 300;
 
 opt.tauE1 = 100;
 opt.tauS1 = 50;
+
+opt.dt = 2;
+opt.T = 4.1*1000;
+opt.nt = opt.T/opt.dt+1;
+opt.tlist = 0:opt.dt:opt.T;
 
 soas = [400; 900];
 r1_iden = nan(opt.nt,2,2);
