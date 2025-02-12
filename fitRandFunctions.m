@@ -23,8 +23,8 @@ parfor ii=1:100
     % array job
     tempOut = load(sprintf('output/randomSeq/rand_out_%03d.mat',ii),'out');
 
-    % see Eqn 8 in the manuscript
-    r1_rc = 1e3 * (sum(tempOut.out.r1(:,end).*tempOut.out.stimList)./sum(tempOut.out.stimList)-mean(tempOut.out.r1(:,end)));
+    % correlate response with stimulus input
+    r1_rc = corr(tempOut.out.r1(:,end),tempOut.out.stimList);
     
     % simplified difference of Gammas from Zhou et al (2019) in PLoS Comp Bio
     diffOfGamma = @(t1,t2,w) t.*exp(t./t1) - w.*t.*exp(t./t2);
@@ -46,9 +46,9 @@ parfor ii=1:100
 
     % reverse correlation analysis output for each variable
     r1s(ii,:) = r1_rc;
-    d1s(ii,:) = sum(tempOut.out.d1(:,end).*tempOut.out.stimList)./sum(tempOut.out.stimList)-mean(tempOut.out.d1(:,end));
-    s1s(ii,:) = sum(tempOut.out.s1(:,end).*tempOut.out.stimList)./sum(tempOut.out.stimList)-mean(tempOut.out.s1(:,end));
-    f1s(ii,:) = sum(tempOut.out.f1(:,end).*tempOut.out.stimList)./sum(tempOut.out.stimList)-mean(tempOut.out.f1(:,end));
+    d1s(ii,:) = corr(tempOut.out.d1(:,end),tempOut.out.stimList);
+    s1s(ii,:) = corr(tempOut.out.s1(:,end),tempOut.out.stimList);
+    f1s(ii,:) = corr(tempOut.out.f1(:,end),tempOut.out.stimList);
 end
 
 rc_out.fitParams = fitParams;
