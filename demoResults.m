@@ -177,14 +177,20 @@ ra_sub = squeeze(sum(r1_sub(:,:,2:end,:),4)./sum(r1_sub(:,:,1:end-1,:),4));
 
 figure
 subplot(121)
-plot(durList(2:end),squeeze(ra_sub(:,1,:)))
+plot(stimDur(2:end),squeeze(ra_sub(:,1,:)))
 ylim([1 2])
 title('tauE')
 
 subplot(122)
-plot(durList(2:end),squeeze(ra_sub(1,:,:)))
+plot(stimDur(2:end),squeeze(ra_sub(1,:,:)))
 ylim([1 2])
 title('tauS')
+
+% plot different parameter combinations
+figure
+plot(stimDur(2:end),reshape(ra_sub([3 6],[2 6],:),4,4)')
+ylim([1 2])
+legend({"E = 100, S = 50","E = 100, S = 500","E = 500, S = 50","E = 500, S = 500"})
 
 %% response adaptation
 %  first we show response adaptation for repeating an identical stimulus
@@ -246,6 +252,12 @@ plot(100:100:1500,squeeze(ra_iden(1,:,:)))
 ylim([-.1 1])
 title('tauS')
 
+% plot different parameter combinations
+figure
+plot(100:100:1500,reshape(ra_iden([3 6],[2 6],:),4,15))
+ylim([-.1 1])
+legend({"E = 100, S = 50","E = 100, S = 500","E = 500, S = 50","E = 500, S = 500"})
+
 %% response adaptation in non-identical stimuli
 %  similar to before, but now we run a sequence with different orientations
 
@@ -296,6 +308,12 @@ subplot(122)
 plot(100:100:1500,squeeze(ra_orth(1,:,:)))
 ylim([-.1 1])
 title('tauS')
+
+% plot different parameter combinations
+figure
+plot(100:100:1500,reshape(ra_orth([3 6],[2 6],:),4,15))
+ylim([-.1 1])
+legend({"E = 100, S = 50","E = 100, S = 500","E = 500, S = 50","E = 500, S = 500"})
 
 %% backward masking
 
@@ -351,6 +369,12 @@ subplot(122)
 plot(100:100:1500,squeeze(ra_mask(1,:,:)))
 ylim([-.1 1])
 title('tauS')
+
+% plot different parameter combinations
+figure
+plot(100:100:1500,reshape(ra_mask([3 6],[2 6],:),4,15))
+ylim([-.1 1])
+legend({"E = 100, S = 50","E = 100, S = 500","E = 500, S = 50","E = 500, S = 500"})
 
 %% Contrast-dependent suppression
 
