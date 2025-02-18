@@ -16,6 +16,7 @@ Main code used in the analyses reported in the manuscript are in the home direct
 - demoResults.m: produces example analyses for each result, consistent with several figures shown in the manuscript
 - testRandomSeq.m: performs reverse correlation analyses with random stimulus sequences (computationally intensive)
 - fitRandFunctions.m: summarizes reverse correlation analyses and fits difference of Gammas to sensory responses (computationally intensive)
+- testSubadditivity.m: analyses subadditive responses (computationally intensive)
 - testResponseAdaptation_[iden/orth].m: analyses response adaptation for identical/orthogonal stimulus sequences (computationally intensive)
 - testBackwardMasking.m: analyses backward masking (computationally intensive)
 - testContrastDependentSuppression.m: analyses interactions between T1 and T2 contrast (computationally intensive)
