@@ -13,6 +13,8 @@ The model code is a library of MATLAB functions. Put the directory on your compu
 
 Main code used in the analyses reported in the manuscript are in the home directory, while core model code is located in the 'model' subdirectory.
 
+Output data for the more computationally intensive analyses are available for download on our OSF page, and can be analyzed in demoResults.m after being placed in the 'output' subdirectory. (We exclude them from this repository due to their filesizes).
+
 - demoResults.m: produces example analyses for each result, consistent with several figures shown in the manuscript
 - testRandomSeq.m: performs reverse correlation analyses with random stimulus sequences (computationally intensive)
 - fitRandFunctions.m: summarizes reverse correlation analyses and fits difference of Gammas to sensory responses (computationally intensive)
