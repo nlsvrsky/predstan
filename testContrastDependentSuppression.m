@@ -30,7 +30,7 @@ opt.display.plotPerf = 0;
 
 %% generate model output for each parameter combination
 tauList = 0:50:1000;
-contrList = [.64 .64 .32; .64 .32 .64];
+contrList = [.64 .64 .16; .64 .16 .64];
 
 paramList = combvec(tauList,tauList,contrList);
 

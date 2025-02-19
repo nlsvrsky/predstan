@@ -381,10 +381,15 @@ legend({"E = 100, S = 50","E = 100, S = 500","E = 500, S = 50","E = 500, S = 500
 opt.stimDur = 30;
 rsoa = 250;
 
+opt.dt = 2;
+opt.T = 4.1*1000;
+opt.nt = opt.T/opt.dt+1;
+opt.tlist = 0:opt.dt:opt.T;
+
 opt.tauE1 = 400;
 opt.tauS1 = 100;
-opt.scaling1 = 1.25e4;
-opt.scaling2 = 1.25e4;
+opt.scaling1 = 1e4;
+opt.scaling2 = 1e4;
 
 r1_supp = nan(2,opt.nt,4);
 d_supp = nan(2,4);
@@ -396,19 +401,19 @@ r1_supp(:,:,1) = p.r1([6 12],:);
 d_supp(:,1) = p.ev;
 
 % T1 high, T2 low
-opt.stimContrasts = [.64; .32];
+opt.stimContrasts = [.64; .16];
 [~,p,~] = runModel(opt,modelClass,rsoa,3,rcond);
 r1_supp(:,:,2) = p.r1([6 12],:);
 d_supp(:,2) = p.ev;
 
 % T1 low, T2 high
-opt.stimContrasts = [.32; .64];
+opt.stimContrasts = [.16; .64];
 [~,p,~] = runModel(opt,modelClass,rsoa,3,rcond);
 r1_supp(:,:,3) = p.r1([6 12],:);
 d_supp(:,3) = p.ev;
 
 % T1 low, T2 low
-opt.stimContrasts = [.32; .32];
+opt.stimContrasts = [.16; .16];
 [~,p,~] = runModel(opt,modelClass,rsoa,3,rcond);
 r1_supp(:,:,4) = p.r1([6 12],:);
 d_supp(:,4) = p.ev;
