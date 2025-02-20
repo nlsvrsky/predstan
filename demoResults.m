@@ -10,15 +10,18 @@ addpath('model');
 % default model settings
 opt = [];
 modelClass = [];
-rsoa = 2001; % SOA = 250 ms (see runModel)
-rseq = []; % default orientation sequence
-rcond = 3; % cueT1, cueT2
+rsoa = 250; % SOA = 250 ms (see runModel) - we'll adjust as needed for each simulation
+rseq = []; % default (orthogonal) orientation sequence
+rcond = 3; % neutral cues only
 
-opt.aAI = 0;
-opt.aAV = 0;
-opt.sigma1 = 0.1;
+opt.aAI = 0; % turn off involuntary attention layer
+opt.aAV = 0; % and voluntary attention layer
+opt.sigma1 = 0.1; % semi-saturation constant for single sensory layer
 
-opt.display.plotTS = 0; % plot the time series for each simulation
+opt.scaling1 = 1e4; % scaling for T1
+opt.scaling2 = 1e4; % and T2
+
+opt.display.plotTS = 0; % turn off plotting for each simulation
 opt.display.plotPerf = 0;
 
 %% reverse correlation
@@ -66,6 +69,7 @@ title('tauS = 400 ms')
 
 opt.stimContrasts = [.64; 0];
 opt.stimDur = 2000;
+rsoa = 2001; % avoiding overlap with first stimulus
 
 opt.dt = 2;
 opt.T = 8.1*1000;
@@ -205,7 +209,7 @@ opt.T = 4.1*1000;
 opt.nt = opt.T/opt.dt+1;
 opt.tlist = 0:opt.dt:opt.T;
 
-soas = [400; 900];
+soas = [400; 900]; % 100, 600 ISIs
 r1_iden = nan(opt.nt,2,2);
 for ii=1:length(soas)
     % present both stimuli
@@ -216,7 +220,7 @@ for ii=1:length(soas)
     r1_iden(:,1,ii) = p.r1(6,:);
 
     % present only one stimulus
-    opt.stimContrasts = [0; .64];
+    opt.stimContrasts = [.64; 0];
     [~,p,~] = runModel(opt,modelClass,soas(ii),2,rcond);
     r1_iden(:,2,ii) = p.r1(6,:);
 end
@@ -225,13 +229,13 @@ end
 figure
 plot(opt.tlist,r1_iden(:,:,1))
 xlim([0 2500])
-legend({'T1 present','T1 absent'})
+legend({'T2 present','T2 absent'})
 
 % but not long SOAs
 figure
 plot(opt.tlist,r1_iden(:,:,2))
 xlim([0 2500])
-legend({'T1 present','T1 absent'})
+legend({'T2 present','T2 absent'})
 
 % effect of taus on response adaptation
 load('output/respAdapt_iden.mat');
@@ -388,8 +392,6 @@ opt.tlist = 0:opt.dt:opt.T;
 
 opt.tauE1 = 400;
 opt.tauS1 = 100;
-opt.scaling1 = 1e4;
-opt.scaling2 = 1e4;
 
 r1_supp = nan(2,opt.nt,4);
 d_supp = nan(2,4);
