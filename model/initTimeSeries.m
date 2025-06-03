@@ -6,11 +6,11 @@ p.s1   = zeros(p.ntheta,p.nt); % suppressive drive
 p.f1   = zeros(p.ntheta,p.nt); % normalization result
 p.r1   = zeros(p.ntheta,p.nt); % response
 
-% Sensory layer 2
-p.d2   = zeros(p.ntheta,p.nt); 
-p.s2   = zeros(p.ntheta,p.nt); 
-p.f2   = zeros(p.ntheta,p.nt); 
-p.r2   = zeros(p.ntheta,p.nt); 
+% Reward layer
+p.d2   = zeros(1,p.nt); % only 1 reward for now
+p.s2   = zeros(1,p.nt); 
+p.f2   = zeros(1,p.nt); 
+p.r2   = zeros(1,p.nt); 
 
 % Sensory layer 3
 p.d3   = zeros(p.ntheta,p.nt); 

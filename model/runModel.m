@@ -74,8 +74,8 @@ p.norient = numel(orientations);
 
 % Conditions
 contrasts = p.stimContrasts;
-% soas      = [100:50:500 800];
-stimseqs  = {[2 1],[2 2],[2 3],[2 4]};
+%soas      = [100:50:500 800]; % why was this commented out?
+stimseqs  = {[2 0], [2 1], [0 1]}; %[cue reward] %{[2 1],[2 2],[2 3],[2 4]};
 
 % Pick conditions to run
 rcontrast = 1:size(contrasts,2); % contrast levels to run
@@ -87,7 +87,7 @@ end
 ncond = numel(rcond);
 
 if ~exist('rsoa','var') || isempty(rsoa)
-    % rsoa = 1:numel(soas); % soa levels to run
+    %rsoa = 1:numel(soas); % soa levels to run COMMENTED OUT WHY?
     rsoa = 250;
 end
 nsoa = numel(rsoa);
@@ -122,7 +122,9 @@ for icond = 1:numel(rcond)
                 p.soa = s; %soas(:,s);
                 p.nstim = numel(p.soa)+1;
                 p.stimseq = stimseqs{q};
-                p.orientseq = orientations(p.stimseq);
+                if p.stimseq > 0
+                    p.orientseq = orientations(p.stimseq);
+                end
                 if verbose
                     fprintf('cond: %s contrast: %1.2f soa: %d seq: %d %d\n\n', condname, p.contrast, p.soa, p.stimseq)
                 end
@@ -173,7 +175,7 @@ end
 %% plot multiple conditions
 if plotPerf
     for icontrast = 1:numel(rcontrast)
-        perfv = plotPerformance(condnames(rcond), soas(rsoa), mean(ev(:,:,:,icontrast,:),5));
+        perfv = plotPerformance(condnames(rcond), rsoa, mean(ev(:,:,:,icontrast,:),5)); % soas(rsoa) -> rsoa
     end
 else
     perfv = [];

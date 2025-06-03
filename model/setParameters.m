@@ -68,8 +68,8 @@ p.tau1            = 52;             % time constant (ms)
 p.sigma1          = 1.4;            % semisaturation constant
 
 %% Sensory layer 2
-p.tau2            = 100;
-p.sigma2          = .1;
+p.tau2            = 100; 
+p.sigma2          = .1; 
 
 %% Sensory layer 3
 p.tau3            = 2;
@@ -102,7 +102,7 @@ p.tauSAV = 0; % " " AV suppression
 
 %% Stimulus
 p.stimOnset       = 500;            % relative to start of trial (ms)
-p.stimDur         = 30;
+p.stimDur         = 30;%300;%30;
 p.stimContrasts   = [.64; .64];
 
 %% Task (control input)

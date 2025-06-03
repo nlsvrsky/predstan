@@ -26,15 +26,24 @@ for t = p.dt:p.dt:p.T
     [p.r1(:,idx), p.f1(:,idx), p.s1(:,idx)] = n_core(...
         p.d1(:,1:idx), p.sigma1, p.p, p.r1(:,idx-1), p.tau1, p.tempWS1(idx:-1:1), p.dt);
     
-    %% Sensory layer 2 (S2)
+    %% Reward layer (S2)
     % Excitatory drive
-    drive2 = halfExp(p.r1(:,1:idx),p.p);
-    p.d2(:,idx) = sum(drive2.*p.tempWE2(idx:-1:1),2);
+    drive2(:,idx) = halfExp(p.r1(6,idx),p.p); % just for now, assume that 6 is the cue
+
+    contrast = 5; % respond more strongly to an actual reward than the mere prediction of a reward
+    rwd_inp = p.rwd(:,idx) * halfExp(p.rfresp(1, 6) * contrast, p.p);
+    
+    % Excitatory drive
+    drive2(:,idx) = drive2(:,idx) + rwd_inp; % just use the reward input as the receptive field for now %halfExp(p.rfresp(logical(rwd_inp),:)*contrast(logical(rwd_inp)),p.p)';
+    
+    p.d2(:,idx) = sum(drive2.*p.tempWE2(idx:-1:1));
     
     % Normalize and update firing rates
     [p.r2(:,idx), p.f2(:,idx), p.s2(:,idx)] = n_core(...
-        p.d2(:,1:idx), p.sigma2, p.p, p.r2(:,idx-1), p.tau2, p.tempWS2(idx:-1:1), p.dt);
-    
+        p.d2(:,1:idx), p.sigma2, p.p, p.r2(:,idx-1), p.tau2, p.tempWS2(idx:-1:1), p.dt, p.r1(6, 1:idx));
+
+    % Ignore other layers (i.e., everything below this) for now
+
     %% Sensory layer 3 (S3)    
     % Excitatory drive
     drive = halfExp(p.r2(:,idx),p.p);
@@ -56,7 +65,7 @@ for t = p.dt:p.dt:p.T
     % decode just between CCW/CW for the appropriate axis
     for iStim = 1:2
         switch p.stimseq(iStim)
-            case {1, 2}
+            case {0, 1, 2}
                 rfresp(:,:,iStim) = p.rfresp(1:2,:);
             case {3, 4}
                 rfresp(:,:,iStim) = p.rfresp(3:4,:);
