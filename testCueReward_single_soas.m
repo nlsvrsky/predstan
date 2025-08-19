@@ -34,10 +34,8 @@ opt.display.plotPerf = 0;
 % let's just look at one parameter combination
 tauE = 100;
 tauS = 50;
-soa = 2000;
 
-
-contrast_results = []; 
+cue_results = []; 
 for soa = [600 1500 3750 9375] + 250
     scale_cue = 600/(soa/2) + .1;
 
@@ -47,7 +45,6 @@ for soa = [600 1500 3750 9375] + 250
     r2_iden = nan(1, opt.nt);
     
     opt2 = opt;
-    opt2.sigma1 = 1.4;
     opt2.tauE1 = tauE;
     opt2.tauS1 = tauS;
     opt2.tauE2 = tauE;
@@ -67,8 +64,8 @@ for soa = [600 1500 3750 9375] + 250
     [~,p_iden,~] = runModel(opt2, modelClass, thisSOA, 2, rcond);
     r1_iden(:,:) = p_iden.r1; %do we need these right now?
     r2_iden(:,:) = p_iden.r2;
-    contrast_results(end + 1, :) = p_iden.r2;
+    cue_results(end + 1, :) = p_iden.r2;
 end
 
-fig = make_linegraph_multiscale(contrast_results, p_iden);
+fig = make_linegraph_multiscale(cue_results, p_iden);
 saveas(fig, strcat("graph_multiscale.png"));
