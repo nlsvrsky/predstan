@@ -16,7 +16,6 @@ rcond = 3; % cueT1, cueT2
 opt.stimContrasts = [.64; .64];
 opt.aAI = 0;
 opt.aAV = 0;
-opt.sigma1 = 0.1;
 
 % this may be needed...
 %opt.stimOnset = 1;
@@ -39,8 +38,8 @@ soa = 2000;
 
 
 contrast_results = []; 
-for soa = [600 1500 3750 9375]/2 + 250
-    scale_cue = 600/soa + .1;
+for soa = [600 1500 3750 9375] + 250
+    scale_cue = 600/(soa/2) + .1;
 
     paramList = [tauE; tauS; soa];
     
@@ -48,6 +47,7 @@ for soa = [600 1500 3750 9375]/2 + 250
     r2_iden = nan(1, opt.nt);
     
     opt2 = opt;
+    opt2.sigma1 = 1.4;
     opt2.tauE1 = tauE;
     opt2.tauS1 = tauS;
     opt2.tauE2 = tauE;
