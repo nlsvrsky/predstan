@@ -1,9 +1,9 @@
 import numpy as np
 
-def simulate(cue, rwd, predW, dt=2, T=12*1000, 
+def simulate(cue, rwd, predW, dt=2, T=12000, 
              tau1=52, sigma1=1.4, tauE1=100, tauS1=50, 
-             tau2=100, sigma2=.025, tauE2=100, tauS2=50*150, 
-             p=1.5, scale_rwd=2):
+             tau2=100, sigma2=.001, tauE2=100, tauS2=50*150, 
+             p=1.5, scale_rwd=1):
     
     # initialize 
     nt = T // dt
