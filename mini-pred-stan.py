@@ -1,9 +1,9 @@
 import numpy as np
 
-def simulate(cue, rwd,  dt=2, T=12*1000, 
+def simulate(cue, rwd, predW, dt=2, T=12*1000, 
              tau1=52, sigma1=1.4, tauE1=100, tauS1=50, 
              tau2=100, sigma2=.025, tauE2=100, tauS2=50*150, 
-             p=1.5, scale_cue=1, scale_rwd=2):
+             p=1.5, scale_rwd=2):
     
     # initialize 
     nt = T // dt
@@ -17,17 +17,17 @@ def simulate(cue, rwd,  dt=2, T=12*1000,
     # simulate
     for i in range(1, nt):
         # sensory cue layer
-        drive1[:, i] = (scale_cue*cue[:, i])**p
+        drive1[:, i] = cue[:, i]**p
         d1[:, i] = np.sum(drive1[:, :i] * tempWE1[i-1::-1], axis=1)
         s1[:, i] = np.sum(np.abs(d1[:, :i]) * tempWS1[i-1::-1])
         f1[:, i] = d1[:, i] / (s1[:, i] + sigma1**p)
-        r1[:, i] = r1[:, i-1] + dt/tau1*(-r1[:, i-1]+f1[:, i]) 
+        r1[:, i] = r1[:, i-1] + dt/tau1*(-r1[:, i-1]+f1[:, i])
         
         # reward layer
-        drive2[i] = r1[0, i]**p + (scale_rwd*rwd[i])**p
+        drive2[i] = (predW @ r1[:, i])**p + (scale_rwd*rwd[i])**p
         d2[i] = np.sum(drive2[:i] * tempWE2[i-1::-1])
         s2[i] = np.sum(np.abs(d2[:i]) * tempWS2[i-1::-1]) 
         f2[i] = d2[i] / (s2[i] + sigma2**p)
-        r2[i] = r2[i-1] + dt/tau2*(-r2[i-1]+f2[i]) 
+        r2[i] = r2[i-1] + dt/tau2*(-r2[i-1]+f2[i])
 
     return r2

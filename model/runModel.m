@@ -74,8 +74,8 @@ p.norient = numel(orientations);
 
 % Conditions
 contrasts = p.stimContrasts;
-%soas      = [100:50:500 800]; % why was this commented out?
-stimseqs  = {[2 0], [2 1], [0 1]}; %[cue reward] %{[2 1],[2 2],[2 3],[2 4]};
+%soas      = [100:50:500 800];
+stimseqs  = {[1 1], [2 1], [3 1], [4 1]}; %{[2 0], [2 1], [0 1]}; [cue reward] 
 
 % Pick conditions to run
 rcontrast = 1:size(contrasts,2); % contrast levels to run
@@ -87,7 +87,7 @@ end
 ncond = numel(rcond);
 
 if ~exist('rsoa','var') || isempty(rsoa)
-    %rsoa = 1:numel(soas); % soa levels to run COMMENTED OUT WHY?
+    %rsoa = 1:numel(soas); % soa levels to run 
     rsoa = 250;
 end
 nsoa = numel(rsoa);

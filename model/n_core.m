@@ -1,4 +1,4 @@
-function [r, f, s] = n_core(d, sigma, p, r_prev, tau, temporalW, dt, extra_pool)
+function [r, f, s] = n_core(d, sigma, p, r_prev, tau, temporalW, dt)
 
 % function [r, f, s] = n_core(d, sigma, p, r_prev, tau, dt)
 %
@@ -12,11 +12,7 @@ function [r, f, s] = n_core(d, sigma, p, r_prev, tau, temporalW, dt, extra_pool)
 % features contribute equally to the normalization pool
 
 % Normalization pool
-if exist('extra_pool', 'var')
-    pool = abs([d; extra_pool]);
-else
-    pool = abs(d); % abs in case drive is negative
-end
+pool = abs(d); % abs in case drive is negative
 
 % Suppressive Drive
 s = sum(sum(pool.*temporalW,2));

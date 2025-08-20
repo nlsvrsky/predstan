@@ -35,10 +35,12 @@ opt.display.plotPerf = 0;
 tauE = 100;
 tauS = 50;
 
-cue_results = []; 
-for soa = [600 1500 3750 9375] + 250
-    scale_cue = 600/(soa/2) + .1;
+soas = [600 1500 3750 9375] + 250;
+predW = 600 ./ (soas/2) + .1;
 
+cue_results = []; 
+for i = 1:length(soas)
+    soa = soas(i);
     paramList = [tauE; tauS; soa];
     
     r1_iden = nan(4,opt.nt);
@@ -49,6 +51,7 @@ for soa = [600 1500 3750 9375] + 250
     opt2.tauS1 = tauS;
     opt2.tauE2 = tauE;
     opt2.tauS2 = 150*tauS;
+    opt2.predW = predW;
     
     thisSOAval = soa;
     if thisSOAval > 0
@@ -58,10 +61,9 @@ for soa = [600 1500 3750 9375] + 250
         thisSOA = 1000;
         opt2.stimContrasts = [1; 0];
     end
-    opt2.scale_cue = scale_cue;
     
     % rseq=2 uses identical stimulus orientations
-    [~,p_iden,~] = runModel(opt2, modelClass, thisSOA, 2, rcond);
+    [~,p_iden,~] = runModel(opt2, modelClass, thisSOA, i, rcond);
     r1_iden(:,:) = p_iden.r1; %do we need these right now?
     r2_iden(:,:) = p_iden.r2;
     cue_results(end + 1, :) = p_iden.r2;

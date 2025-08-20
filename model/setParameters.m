@@ -58,18 +58,18 @@ p.tlist           = 0:p.dt:p.T;
 %% Space and feature space
 p.x               = 0;              % sampling of space
 p.nx              = numel(p.x);
-p.ntheta          = 12;             % should match RF
+p.ntheta          = 4;             % should match RF
 
 %% Exponent
 p.p               = 1.5;
 
-%% Sensory layer 1
+%% Sensory cue layer
 p.tau1            = 52;             % time constant (ms)
 p.sigma1          = 1.4;            % semisaturation constant
 
-%% Sensory layer 2
+%% Reward layer
 p.tau2            = 100; 
-p.sigma2          = .1; 
+p.sigma2          = .0015; 
 
 %% Sensory layer 3
 p.tau3            = 2;
@@ -104,6 +104,12 @@ p.tauSAV = 0; % " " AV suppression
 p.stimOnset       = 500;            % relative to start of trial (ms)
 p.stimDur         = 30;%300;%30;
 p.stimContrasts   = [.64; .64];
+
+%% Predictive weights
+p.predW = [0 0 0 0];
+
+%% Reward weighting
+p.scale_rwd       = 1;
 
 %% Task (control input)
 p.AVOnset         = -34; 

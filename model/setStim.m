@@ -9,7 +9,6 @@ if strcmp(p.stimMode,'standard')
     timeSeries = zeros([p.norient p.nt]); % use the orientations as cues for now
     if p.stimseq(1) > 0 
         timeSeries(p.stimseq(1),unique(round((stimStart:p.dt:stimEnd)/p.dt))) = 1; % T1
-        %timeSeries(p.stimseq(2),unique(round(((stimStart:p.dt:stimEnd) + p.soa)/p.dt))) = 1; % T2
     end
 
     % reward present?
